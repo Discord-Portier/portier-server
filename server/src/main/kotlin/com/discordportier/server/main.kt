@@ -4,6 +4,8 @@ package com.discordportier.server
 
 import com.discordportier.server.ext.epochMilli
 import com.discordportier.server.ext.now
+import com.discordportier.server.rest.v1.ping
+import com.discordportier.server.rest.v1.subscriptionWebSocket
 import com.github.discordportier.server.model.rest.response.jackson.PongJacksonPayload
 import com.github.discordportier.server.rest.UrlPaths
 import io.ktor.application.*
@@ -59,13 +61,9 @@ fun main(args: Array<String>): Unit = runBlocking {
         }
 
         routing {
-            // Version even the websocket URL so we know exactly what the client wants.
-            webSocket("/v1/ws") {
-                close(reason = CloseReason(CloseReason.Codes.NORMAL, "Not implemented"))
-            }
-
-            get("/v1/${UrlPaths.PING.path}") {
-                call.respond(PongJacksonPayload(now().epochMilli))
+            route("/v1") {
+                subscriptionWebSocket()
+                ping()
             }
         }
     }.start(wait = true)
