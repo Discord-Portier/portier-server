@@ -1,1 +1,0 @@
-const val JUNIT_JUPITER_VERSION = "5.7.2"
