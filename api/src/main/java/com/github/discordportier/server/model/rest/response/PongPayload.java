@@ -1,6 +1,7 @@
 package com.github.discordportier.server.model.rest.response;
 
 public class PongPayload implements PortierPayload {
+  private static final long serialVersionUID = 8323851641130476612L;
   public static final String JSON_TYPE_IDENTIFIER = "PONG";
   public static final String JSON_FIELD_TIMESTAMP = "timestamp";
 

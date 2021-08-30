@@ -1,5 +1,7 @@
 package com.github.discordportier.server.model.rest.response;
 
-public interface PortierPayload {
+import java.io.Serializable;
+
+public interface PortierPayload extends Serializable {
   String getPayloadTypeName();
 }

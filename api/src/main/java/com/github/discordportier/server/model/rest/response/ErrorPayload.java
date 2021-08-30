@@ -3,6 +3,7 @@ package com.github.discordportier.server.model.rest.response;
 import java.util.Optional;
 
 public class ErrorPayload implements PortierPayload {
+  private static final long serialVersionUID = 3902461293428272019L;
   public static final String JSON_TYPE_IDENTIFIER = "ERROR";
   public static final String JSON_FIELD_CODE = "code";
   public static final String JSON_FIELD_DETAIL = "detail";
