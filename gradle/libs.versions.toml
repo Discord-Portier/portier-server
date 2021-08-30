@@ -1,0 +1,19 @@
+[versions]
+log4j = "2.14.1"
+kotlin-logging = "2.0.10"
+jackson = "2.12.5"
+
+[libraries]
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-slf4j18 = { module = "org.apache.logging.log4j:log4j-slf4j18-impl", version.ref = "log4j" }
+kotlin-logging = { module = "io.github.microutils:kotlin-logging-jvm", version.ref = "kotlin-logging" }
+jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
+
+[bundles]
+log4j-impl = ["log4j-api", "log4j-core", "log4j-slf4j18"]
+jackson = ["jackson-core", "jackson-databind", "jackson-yaml"]
+
+[plugins]

@@ -2,6 +2,8 @@ pluginManagement {
     includeBuild("build-logic")
 }
 
+enableFeaturePreview("VERSION_CATALOGS")
+
 rootProject.name = "portier-server"
 includeProject("bom")
 includeProject("api")
