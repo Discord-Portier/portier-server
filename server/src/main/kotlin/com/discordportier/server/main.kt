@@ -17,6 +17,7 @@ import io.ktor.server.netty.*
 import io.ktor.websocket.*
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
+import kotlinx.cli.default
 import kotlinx.cli.required
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
@@ -37,14 +38,17 @@ fun main(args: Array<String>): Unit = runBlocking {
         ArgType.String,
         description = "The name of the database to use"
     ).required()
+    val httpPort by parser.option(ArgType.Int, description = "Port to use for HTTP server")
+        .default(8080)
     parser.parse(args)
+    require(httpPort in 0..Short.MAX_VALUE.toInt()) { "port $httpPort is invalid" }
 
     val mongo = KMongo.createClient(mongoUrl).coroutine
     val db = mongo.getDatabase(mongoDatabaseName)
     mongo.startSession() // Ensure we are authorised and it actually works out...
     onShutdown { mongo.close() }
 
-    embeddedServer(Netty, port = 8080) {
+    embeddedServer(Netty, port = httpPort) {
         install(DefaultHeaders)
         install(CallLogging)
         install(WebSockets) {
