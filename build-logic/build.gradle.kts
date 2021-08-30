@@ -24,7 +24,8 @@ dependencies {
     implementation("net.kyori:indra-common:$indraVersion")
     implementation("net.kyori:indra-publishing-sonatype:$indraVersion")
     implementation("com.adarshr:gradle-test-logger-plugin:$gradleTestLoggerVersion")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    implementation(kotlin("gradle-plugin", version = kotlinVersion))
+    implementation(kotlin("serialization", version = kotlinVersion))
     implementation("gradle.plugin.com.github.jengelman.gradle.plugins:shadow:$shadowVersion")
     implementation("org.checkerframework:checkerframework-gradle-plugin:$checkerFrameworkGradleVersion")
 }

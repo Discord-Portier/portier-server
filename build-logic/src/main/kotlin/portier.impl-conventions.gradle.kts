@@ -4,6 +4,7 @@ plugins {
     id("portier.common-conventions")
     id("com.github.johnrengelman.shadow")
     id("org.jetbrains.kotlin.jvm")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 tasks {
