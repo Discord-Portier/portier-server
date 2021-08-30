@@ -7,6 +7,7 @@ enableFeaturePreview("VERSION_CATALOGS")
 rootProject.name = "portier-server"
 includeProject("bom")
 includeProject("api")
+includeProject("api-jackson")
 includeProject("server")
 
 fun includeProject(path: String, name: String = "${rootProject.name}-${pathToProjectName(path, '-')}") {
