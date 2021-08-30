@@ -10,6 +10,8 @@ dependencies {
     implementation(rootProject.libs.kotlin.logging)
     implementation(rootProject.libs.bundles.jackson)
     implementation(rootProject.libs.bundles.ktor.server)
+    implementation(rootProject.libs.bundles.kmongo)
+    implementation(rootProject.libs.kotlinx.cli)
 }
 
 application {

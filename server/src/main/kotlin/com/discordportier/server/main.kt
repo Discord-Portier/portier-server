@@ -15,13 +15,35 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.websocket.*
+import kotlinx.cli.ArgParser
+import kotlinx.cli.ArgType
+import kotlinx.cli.required
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import org.litote.kmongo.coroutine.coroutine
+import org.litote.kmongo.reactivestreams.KMongo
 import java.time.Duration
+import kotlin.concurrent.thread
 
 private val logger = KotlinLogging.logger { }
+const val APP_NAME = "portier-server"
 
-fun main() {
+fun main(args: Array<String>): Unit = runBlocking {
     logger.info("Application starting up...")
+
+    val parser = ArgParser(APP_NAME)
+    val mongoUrl by parser.option(ArgType.String, description = "MongoDB connection URL").required()
+    val mongoDatabaseName by parser.option(
+        ArgType.String,
+        description = "The name of the database to use"
+    ).required()
+    parser.parse(args)
+
+    val mongo = KMongo.createClient(mongoUrl).coroutine
+    val db = mongo.getDatabase(mongoDatabaseName)
+    mongo.startSession() // Ensure we are authorised and it actually works out...
+    onShutdown { mongo.close() }
+
     embeddedServer(Netty, port = 8080) {
         install(DefaultHeaders)
         install(CallLogging)
@@ -43,4 +65,8 @@ fun main() {
             }
         }
     }.start(wait = true)
+}
+
+private fun onShutdown(block: () -> Unit) {
+    Runtime.getRuntime().addShutdownHook(thread(start = false, block = block))
 }

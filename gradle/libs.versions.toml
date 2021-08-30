@@ -3,6 +3,8 @@ log4j = "2.14.1"
 kotlin-logging = "2.0.10"
 jackson = "2.12.5"
 ktor = "1.6.3"
+kmongo = "4.2.8"
+kotlinx-cli = "0.3.2"
 
 [libraries]
 log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
@@ -17,10 +19,14 @@ ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-websockets = { module = "io.ktor:ktor-websockets", version.ref = "ktor" }
 ktor-jackson = { module = "io.ktor:ktor-jackson", version.ref = "ktor" }
+kmongo-coroutine = { module = "org.litote.kmongo:kmongo-coroutine", version.ref = "kmongo" }
+kmongo-jackson = { module = "org.litote.kmongo:kmongo-jackson-mapping", version.ref = "kmongo" }
+kotlinx-cli = { module = "org.jetbrains.kotlinx:kotlinx-cli-jvm", version.ref = "kotlinx-cli" }
 
 [bundles]
 log4j-impl = ["log4j-api", "log4j-core", "log4j-slf4j18"]
 jackson = ["jackson-core", "jackson-annotations", "jackson-databind", "jackson-yaml"]
 ktor-server = ["ktor-server-core", "ktor-server-netty", "ktor-websockets", "ktor-jackson"]
+kmongo = ["kmongo-coroutine", "kmongo-jackson"]
 
 [plugins]
