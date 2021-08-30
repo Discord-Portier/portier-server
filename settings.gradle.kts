@@ -1,2 +1,15 @@
-rootProject.name = "portier-server"
+pluginManagement {
+    includeBuild("build-logic")
+}
 
+rootProject.name = "portier-server"
+includeProject("bom")
+
+fun includeProject(path: String, name: String = "${rootProject.name}-${pathToProjectName(path, '-')}") {
+    include(path)
+    project(":${pathToProjectName(path)}").name = name
+}
+
+fun pathToProjectName(path: String, separator: Char = ':') =
+    path.replace('/', separator)
+        .replace('\\', separator)
