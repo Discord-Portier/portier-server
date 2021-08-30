@@ -2,17 +2,16 @@
 
 package com.discordportier.server
 
-import com.discordportier.server.ext.epochMilli
-import com.discordportier.server.ext.now
+import com.discordportier.server.model.authentication.User
 import com.discordportier.server.rest.v1.ping
 import com.discordportier.server.rest.v1.subscriptionWebSocket
-import com.github.discordportier.server.model.rest.response.jackson.PongJacksonPayload
-import com.github.discordportier.server.rest.UrlPaths
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.application.*
+import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.jackson.*
-import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -24,7 +23,10 @@ import kotlinx.cli.required
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.litote.kmongo.coroutine.coroutine
+import org.litote.kmongo.eq
+import org.litote.kmongo.id.jackson.IdJacksonModule
 import org.litote.kmongo.reactivestreams.KMongo
+import org.slf4j.event.Level
 import java.time.Duration
 import kotlin.concurrent.thread
 
@@ -50,20 +52,43 @@ fun main(args: Array<String>): Unit = runBlocking {
     mongo.startSession() // Ensure we are authorised and it actually works out...
     onShutdown { mongo.close() }
 
+    db.getCollection<User>(User.COLLECTION)
+        .ensureUniqueIndex(User::name)
+
     embeddedServer(Netty, port = httpPort) {
         install(DefaultHeaders)
-        install(CallLogging)
+        install(CallLogging) {
+            level = Level.INFO
+        }
         install(WebSockets) {
             pingPeriod = Duration.ofSeconds(30L)
         }
         install(ContentNegotiation) {
-            jackson()
+            jackson {
+                registerModule(IdJacksonModule())
+                registerModule(JavaTimeModule())
+                disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            }
+        }
+        install(Authentication) {
+            basic("basic") {
+                realm = "Access to portier API"
+                validate { credentials ->
+                    db.getCollection<User>(User.COLLECTION)
+                        .findOne(
+                            User::name eq credentials.name,
+                            User::password eq credentials.password
+                        )
+                }
+            }
         }
 
         routing {
             route("/v1") {
-                subscriptionWebSocket()
-                ping()
+                authenticate("basic") {
+                    subscriptionWebSocket()
+                    ping()
+                }
             }
         }
     }.start(wait = true)

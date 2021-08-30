@@ -8,5 +8,5 @@ import io.ktor.response.*
 import io.ktor.routing.*
 
 fun Route.ping() = get("/ping") {
-    call.respond(PongJacksonPayload(now().epochMilli))
+    call.respond(PongJacksonPayload(now()))
 }

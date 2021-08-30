@@ -7,19 +7,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.discordportier.server.model.rest.response.PongPayload;
+import java.time.ZonedDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // The impl may be newer than classpath's API.
 public class PongJacksonPayload extends PongPayload implements JacksonPayload {
   @JsonCreator(mode = Mode.PROPERTIES)
   public PongJacksonPayload(
-      @JsonProperty(JSON_FIELD_TIMESTAMP) final long timestamp
+      @JsonProperty(JSON_FIELD_TIMESTAMP) final ZonedDateTime timestamp
   ) {
     super(timestamp);
   }
 
   @Override
   @JsonGetter(JSON_FIELD_TIMESTAMP)
-  public long getTimestamp() {
+  public ZonedDateTime getTimestamp() {
     return super.getTimestamp();
   }
 

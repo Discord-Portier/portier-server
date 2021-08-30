@@ -14,19 +14,21 @@ kotlin-logging = { module = "io.github.microutils:kotlin-logging-jvm", version.r
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
 jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-websockets = { module = "io.ktor:ktor-websockets", version.ref = "ktor" }
 ktor-jackson = { module = "io.ktor:ktor-jackson", version.ref = "ktor" }
+ktor-auth = { module = "io.ktor:ktor-auth", version.ref = "ktor" }
 kmongo-coroutine = { module = "org.litote.kmongo:kmongo-coroutine", version.ref = "kmongo" }
 kmongo-jackson = { module = "org.litote.kmongo:kmongo-jackson-mapping", version.ref = "kmongo" }
 kotlinx-cli = { module = "org.jetbrains.kotlinx:kotlinx-cli-jvm", version.ref = "kotlinx-cli" }
 
 [bundles]
 log4j-impl = ["log4j-api", "log4j-core", "log4j-slf4j18"]
-jackson = ["jackson-core", "jackson-annotations", "jackson-databind", "jackson-yaml"]
-ktor-server = ["ktor-server-core", "ktor-server-netty", "ktor-websockets", "ktor-jackson"]
+jackson = ["jackson-core", "jackson-jsr310", "jackson-annotations", "jackson-databind", "jackson-yaml"]
+ktor-server = ["ktor-server-core", "ktor-server-netty", "ktor-websockets", "ktor-jackson", "ktor-auth"]
 kmongo = ["kmongo-coroutine", "kmongo-jackson"]
 
 [plugins]

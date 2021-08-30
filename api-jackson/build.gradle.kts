@@ -6,4 +6,5 @@ dependencies {
     api(project(":portier-server-api"))
     api(rootProject.libs.jackson.annotations)
     api(rootProject.libs.jackson.databind)
+    api(rootProject.libs.jackson.jsr310)
 }
