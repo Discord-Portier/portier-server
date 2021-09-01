@@ -1,4 +1,4 @@
-package com.discordportier.server.ktxser
+package com.github.discordportier.server.ktxser
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

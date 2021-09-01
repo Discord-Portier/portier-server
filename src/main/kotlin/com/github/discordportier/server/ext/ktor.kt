@@ -1,13 +1,13 @@
-package com.discordportier.server.ext
+package com.github.discordportier.server.ext
 
-import com.discordportier.server.exception.ServerError
-import com.discordportier.server.exception.UnauthorisedException
-import com.discordportier.server.model.authentication.User
-import com.discordportier.server.model.authentication.UserPermission
-import com.discordportier.server.model.event.ErrorEvent
-import com.discordportier.server.model.event.WebSocketEvent
-import com.discordportier.server.model.rest.v1.response.ErrorCode
-import com.discordportier.server.model.rest.v1.response.ErrorPayload
+import com.github.discordportier.server.exception.ServerError
+import com.github.discordportier.server.exception.UnauthorisedException
+import com.github.discordportier.server.model.authentication.User
+import com.github.discordportier.server.model.authentication.UserPermission
+import com.github.discordportier.server.model.event.ErrorEvent
+import com.github.discordportier.server.model.event.WebSocketEvent
+import com.github.discordportier.server.model.rest.v1.response.ErrorCode
+import com.github.discordportier.server.model.rest.v1.response.ErrorPayload
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.cio.websocket.*

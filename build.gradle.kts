@@ -31,7 +31,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("com.discordportier.server.MainKt")
+    mainClass.set("com.github.discordportier.server.MainKt")
 }
 
 indra {

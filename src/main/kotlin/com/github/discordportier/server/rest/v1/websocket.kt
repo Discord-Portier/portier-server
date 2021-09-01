@@ -1,10 +1,10 @@
-package com.discordportier.server.rest.v1
+package com.github.discordportier.server.v1
 
-import com.discordportier.server.ext.jsonSerializer
-import com.discordportier.server.ext.portierWebSocket
-import com.discordportier.server.ext.requirePermissions
-import com.discordportier.server.model.authentication.UserPermission
-import com.discordportier.server.model.event.WebSocketEvent
+import com.github.discordportier.server.ext.jsonSerializer
+import com.github.discordportier.server.ext.portierWebSocket
+import com.github.discordportier.server.ext.requirePermissions
+import com.github.discordportier.server.model.authentication.UserPermission
+import com.github.discordportier.server.model.event.WebSocketEvent
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*

@@ -1,7 +1,7 @@
-package com.discordportier.server.exception
+package com.github.discordportier.server.exception
 
-import com.discordportier.server.model.authentication.UserPermission
-import com.discordportier.server.model.rest.v1.response.ErrorCode
+import com.github.discordportier.server.model.authentication.UserPermission
+import com.github.discordportier.server.model.rest.v1.response.ErrorCode
 
 class UnauthorisedException(vararg permissions: UserPermission) : Exception(
     "Missing permissions: ${permissions.joinToString(", ")}",

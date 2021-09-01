@@ -1,4 +1,4 @@
-package com.discordportier.server.model.authentication
+package com.github.discordportier.server.model.authentication
 
 enum class UserPermission {
     MANAGE_USERS,

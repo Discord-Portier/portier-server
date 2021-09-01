@@ -1,4 +1,4 @@
-package com.discordportier.server.ext
+package com.github.discordportier.server.ext
 
 import org.apache.commons.codec.binary.Hex
 

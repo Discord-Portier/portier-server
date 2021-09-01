@@ -1,4 +1,4 @@
-package com.discordportier.server.model.authentication
+package com.github.discordportier.server.model.authentication
 
 import io.ktor.auth.*
 import kotlinx.serialization.Serializable

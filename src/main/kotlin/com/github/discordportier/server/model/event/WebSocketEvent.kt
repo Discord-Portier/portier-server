@@ -1,6 +1,6 @@
-package com.discordportier.server.model.event
+package com.github.discordportier.server.model.event
 
-import com.discordportier.server.model.rest.v1.response.ErrorPayload
+import com.github.discordportier.server.model.rest.v1.response.ErrorPayload
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

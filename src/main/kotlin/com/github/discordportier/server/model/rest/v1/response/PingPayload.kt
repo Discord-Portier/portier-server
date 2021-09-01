@@ -1,4 +1,4 @@
-package com.discordportier.server.model.rest.v1.response
+package com.github.discordportier.server.model.rest.v1.response
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable

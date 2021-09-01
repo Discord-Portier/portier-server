@@ -2,14 +2,14 @@
 
 package com.discordportier.server
 
-import com.discordportier.server.exception.ServerError
-import com.discordportier.server.ext.jsonSerializer
-import com.discordportier.server.ext.toHexString
-import com.discordportier.server.model.authentication.User
-import com.discordportier.server.model.rest.v1.response.ErrorCode
-import com.discordportier.server.model.rest.v1.response.ErrorPayload
-import com.discordportier.server.rest.v1.ping
-import com.discordportier.server.rest.v1.subscriptionWebSocket
+import com.github.discordportier.server.exception.ServerError
+import com.github.discordportier.server.ext.jsonSerializer
+import com.github.discordportier.server.ext.toHexString
+import com.github.discordportier.server.model.authentication.User
+import com.github.discordportier.server.model.rest.v1.response.ErrorCode
+import com.github.discordportier.server.model.rest.v1.response.ErrorPayload
+import com.github.discordportier.server.v1.ping
+import com.github.discordportier.server.v1.subscriptionWebSocket
 import com.google.common.hash.Hashing
 import io.ktor.application.*
 import io.ktor.auth.*
