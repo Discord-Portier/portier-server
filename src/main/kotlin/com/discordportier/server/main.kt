@@ -3,12 +3,14 @@
 package com.discordportier.server
 
 import com.discordportier.server.exception.ServerError
+import com.discordportier.server.ext.toHexString
 import com.discordportier.server.ktxser.ZonedDateTimeSerializer
 import com.discordportier.server.model.authentication.User
 import com.discordportier.server.model.rest.v1.response.ErrorCode
 import com.discordportier.server.model.rest.v1.response.ErrorPayload
 import com.discordportier.server.rest.v1.ping
 import com.discordportier.server.rest.v1.subscriptionWebSocket
+import com.google.common.hash.Hashing
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
@@ -79,10 +81,14 @@ fun main(args: Array<String>): Unit = runBlocking {
             basic("basic") {
                 realm = "Access to portier API"
                 validate { credentials ->
+                    val hashedPassword = Hashing.sha512()
+                        .hashString(credentials.password, Charsets.UTF_8)
+                        .asBytes()
+                        .toHexString()
                     db.getCollection<User>(User.COLLECTION)
                         .findOne(
                             User::name eq credentials.name,
-                            User::password eq credentials.password
+                            User::password eq hashedPassword
                         )
                 }
             }

@@ -23,6 +23,8 @@ dependencies {
     implementation(libs.bundles.kmongo)
     implementation(libs.kotlinx.cli)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.guava)
+    implementation(libs.apache.commons.codec)
 
     testImplementation(libs.bundles.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)

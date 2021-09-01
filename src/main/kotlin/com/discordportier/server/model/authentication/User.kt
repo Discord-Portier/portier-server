@@ -8,6 +8,9 @@ import org.litote.kmongo.newId
 @Serializable
 data class User(
     val name: String,
+    /**
+     * SHA-512 hashed password.
+     */
     val password: String,
     val permissions: Set<UserPermission>,
 
