@@ -1,6 +1,9 @@
 package com.discordportier.server.rest.v1
 
 import com.discordportier.server.ext.jsonSerializer
+import com.discordportier.server.ext.portierWebSocket
+import com.discordportier.server.ext.requirePermissions
+import com.discordportier.server.model.authentication.UserPermission
 import com.discordportier.server.model.event.WebSocketEvent
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
@@ -27,7 +30,9 @@ suspend fun WebSocketEvent.post() {
     }
 }
 
-fun Route.subscriptionWebSocket(path: String = "/ws") = webSocket(path) {
+fun Route.subscriptionWebSocket(path: String = "/ws") = portierWebSocket(path) {
+    this.call.requirePermissions(UserPermission.READ_PUNISHMENTS)
+
     try {
         sockets.add(this)
         incoming.consumeEach {}

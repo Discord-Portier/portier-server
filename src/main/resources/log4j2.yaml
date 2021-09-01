@@ -13,3 +13,9 @@ Configuration:
       level: info
       AppenderRef:
         ref: Console
+    logger:
+      - name: com.discordportier.server
+        level: debug
+        additivity: false
+        AppenderRef:
+          ref: Console

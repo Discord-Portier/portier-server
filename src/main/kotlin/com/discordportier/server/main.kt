@@ -5,7 +5,6 @@ package com.discordportier.server
 import com.discordportier.server.exception.ServerError
 import com.discordportier.server.ext.jsonSerializer
 import com.discordportier.server.ext.toHexString
-import com.discordportier.server.ktxser.ZonedDateTimeSerializer
 import com.discordportier.server.model.authentication.User
 import com.discordportier.server.model.rest.v1.response.ErrorCode
 import com.discordportier.server.model.rest.v1.response.ErrorPayload
@@ -27,9 +26,6 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
 import mu.KotlinLogging
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.eq
