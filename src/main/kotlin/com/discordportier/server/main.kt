@@ -3,6 +3,7 @@
 package com.discordportier.server
 
 import com.discordportier.server.exception.ServerError
+import com.discordportier.server.ext.jsonSerializer
 import com.discordportier.server.ext.toHexString
 import com.discordportier.server.ktxser.ZonedDateTimeSerializer
 import com.discordportier.server.model.authentication.User
@@ -71,11 +72,7 @@ fun main(args: Array<String>): Unit = runBlocking {
             pingPeriod = Duration.ofSeconds(30L)
         }
         install(ContentNegotiation) {
-            json(Json {
-                serializersModule = SerializersModule {
-                    contextual(ZonedDateTimeSerializer)
-                }
-            })
+            json(jsonSerializer)
         }
         install(Authentication) {
             basic("basic") {

@@ -1,9 +1,37 @@
 package com.discordportier.server.rest.v1
 
+import com.discordportier.server.ext.jsonSerializer
+import com.discordportier.server.model.event.WebSocketEvent
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.isActive
+import kotlinx.serialization.encodeToString
+import java.util.*
+
+// Does this need to be weak?
+private val sockets = Collections.newSetFromMap<DefaultWebSocketServerSession>(WeakHashMap())
+
+suspend fun WebSocketEvent.post() {
+    if (sockets.isEmpty()) {
+        // Nothing to send; don't serialize.
+        return
+    }
+
+    val json = jsonSerializer.encodeToString(this)
+    sockets.forEach {
+        if (it.isActive) {
+            it.send(json)
+        }
+    }
+}
 
 fun Route.subscriptionWebSocket(path: String = "/ws") = webSocket(path) {
-    close(reason = CloseReason(CloseReason.Codes.NORMAL, "Not implemented"))
+    try {
+        sockets.add(this)
+        incoming.consumeEach {}
+    } finally {
+        sockets.remove(this)
+    }
 }
