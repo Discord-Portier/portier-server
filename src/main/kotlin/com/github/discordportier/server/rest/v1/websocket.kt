@@ -1,4 +1,4 @@
-package com.github.discordportier.server.v1
+package com.github.discordportier.server.rest.v1
 
 import com.github.discordportier.server.ext.jsonSerializer
 import com.github.discordportier.server.ext.portierWebSocket
