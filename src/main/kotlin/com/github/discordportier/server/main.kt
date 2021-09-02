@@ -1,6 +1,6 @@
 @file:JvmName("MainKt")
 
-package com.discordportier.server
+package com.github.discordportier.server
 
 import com.github.discordportier.server.exception.ServerError
 import com.github.discordportier.server.ext.jsonSerializer
@@ -8,8 +8,8 @@ import com.github.discordportier.server.ext.toHexString
 import com.github.discordportier.server.model.authentication.User
 import com.github.discordportier.server.model.rest.v1.response.ErrorCode
 import com.github.discordportier.server.model.rest.v1.response.ErrorPayload
-import com.github.discordportier.server.v1.ping
-import com.github.discordportier.server.v1.subscriptionWebSocket
+import com.github.discordportier.server.rest.v1.subscriptionWebSocket
+import com.github.discordportier.server.rest.v1.v1Ping
 import com.google.common.hash.Hashing
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -26,6 +26,8 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.eq
@@ -88,12 +90,14 @@ fun main(args: Array<String>): Unit = runBlocking {
         }
         install(StatusPages) {
             exception<Throwable> {
-                call.respond(
-                    if (it is ServerError) {
-                        ErrorPayload(it.errorCode, it.errorDetail)
-                    } else {
-                        ErrorPayload(ErrorCode.INTERNAL_SERVER_ERROR, "Uncaught exception")
-                    }
+                call.respond<ErrorWrapper>(
+                    ErrorWrapper.Wrapped(
+                        if (it is ServerError) {
+                            ErrorPayload(it.errorCode, it.errorDetail)
+                        } else {
+                            ErrorPayload(ErrorCode.INTERNAL_SERVER_ERROR, "Uncaught exception")
+                        }
+                    )
                 )
                 throw it
             }
@@ -103,7 +107,7 @@ fun main(args: Array<String>): Unit = runBlocking {
             route("/v1") {
                 authenticate("basic") {
                     subscriptionWebSocket()
-                    ping()
+                    v1Ping()
                 }
             }
         }
@@ -112,4 +116,11 @@ fun main(args: Array<String>): Unit = runBlocking {
 
 private fun onShutdown(block: () -> Unit) {
     Runtime.getRuntime().addShutdownHook(thread(start = false, block = block))
+}
+
+@Serializable
+private sealed class ErrorWrapper {
+    @Serializable
+    @SerialName("error")
+    data class Wrapped(val error: ErrorPayload) : ErrorWrapper()
 }
