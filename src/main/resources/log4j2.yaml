@@ -14,7 +14,7 @@ Configuration:
       AppenderRef:
         ref: Console
     logger:
-      - name: com.discordportier.server
+      - name: com.github.discordportier.server
         level: debug
         additivity: false
         AppenderRef:
