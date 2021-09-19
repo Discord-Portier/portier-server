@@ -1,11 +1,12 @@
 version: '3.7'
 
 services:
-  mongo:
-    image: mongo:5.0-focal
+  postgres:
+    image: postgres:13-alpine
     ports:
-      - '27017:27017'
+      - '5432:5432'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: portier
-      MONGO_INITDB_ROOT_PASSWORD: portier
-      MONGO_INITDB_DATABASE: portier
+      POSTGRES_DB: portier
+      POSTGRES_USER: portier
+      POSTGRES_PASSWORD: portier
+      POSTGRES_HOST_AUTH_METHOD: trust

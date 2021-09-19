@@ -1,10 +1,11 @@
 plugins {
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.depman)
+    alias(libs.plugins.kotlin.lang)
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.kotlin.jpa)
     alias(libs.plugins.indra)
     alias(libs.plugins.test.logger)
-    alias(libs.plugins.shadow)
-    application
     jacoco
 }
 
@@ -16,22 +17,24 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.bundles.log4j.impl)
-    implementation(libs.bundles.jackson) // Required for log4j's config
+    implementation(platform(libs.spring.boot.dependencies))
+    implementation(libs.bundles.spring) {
+        exclude("org.springframework.boot", "spring-boot-starter-tomcat")
+    }
+
+    implementation(libs.bundles.jackson)
+    implementation(libs.logback)
     implementation(libs.kotlin.logging)
-    implementation(libs.bundles.ktor.server)
-    implementation(libs.bundles.kmongo)
-    implementation(libs.kotlinx.cli)
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.guava)
     implementation(libs.apache.commons.codec)
+    implementation(libs.problem)
+    implementation(libs.problem.jackson)
+    implementation(libs.problem.spring)
+    implementation(libs.bundles.springdoc)
+    runtimeOnly(libs.postgresql)
 
-    testImplementation(libs.bundles.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-}
-
-application {
-    mainClass.set("com.github.discordportier.server.MainKt")
+    testImplementation(libs.bundles.testing.api)
+    testRuntimeOnly(libs.bundles.testing.runtime)
 }
 
 indra {
@@ -58,10 +61,6 @@ configurations {
 }
 
 tasks {
-    shadowJar {
-        archiveClassifier.set(null as String?)
-    }
-
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
             jvmTarget = "11"
