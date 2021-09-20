@@ -1,23 +1,20 @@
 package com.github.discordportier.server.rest
 
+import com.github.discordportier.server.annotation.ConsumeJson
+import com.github.discordportier.server.annotation.ProduceJson
 import com.github.discordportier.server.exception.PortierException
 import com.github.discordportier.server.model.api.request.PunishmentCreationRequest
 import com.github.discordportier.server.model.api.response.ErrorCode
 import com.github.discordportier.server.model.api.response.PunishmentCreationResponse
 import com.github.discordportier.server.model.database.PunishmentEntity
 import com.github.discordportier.server.model.database.PunishmentRepository
-import com.github.discordportier.server.model.database.ServerEntity
 import com.github.discordportier.server.model.database.ServerRepository
-import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
-@RequestMapping(
-    "/v1/punishment",
-    consumes = [MediaType.APPLICATION_JSON_VALUE],
-    produces = [MediaType.APPLICATION_JSON_VALUE],
-)
+@RequestMapping("/v1/punishment")
+@ProduceJson
 class PunishmentResource(
     private val serverRepository: ServerRepository,
     private val punishmentRepository: PunishmentRepository,
@@ -26,6 +23,7 @@ class PunishmentResource(
     fun listPunishments(): List<PunishmentEntity> = punishmentRepository.findAll().toList()
 
     @PostMapping("/new")
+    @ConsumeJson
     fun newPunishment(@RequestBody request: PunishmentCreationRequest): PunishmentCreationResponse {
         if (!serverRepository.existsById(request.server)) {
             throw PortierException(ErrorCode.UNKNOWN_SERVER, "Server ${request.server} is unknown")
