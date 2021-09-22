@@ -13,6 +13,7 @@ enum class ErrorCode(
 
     // HTTP only
     UNKNOWN_SERVER(http = HttpStatus.BAD_REQUEST),
+    USER_ALREADY_EXISTS(http = HttpStatus.BAD_REQUEST),
 
     // WS only
     WEB_SOCKET_CANNOT_RECEIVE(webSocket = CloseStatus.NOT_ACCEPTABLE),

@@ -1,4 +1,4 @@
-package com.github.discordportier.server.model.database
+package com.github.discordportier.server.model.database.server
 
 import org.springframework.data.repository.CrudRepository
 

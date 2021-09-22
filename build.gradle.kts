@@ -17,6 +17,9 @@ repositories {
 }
 
 dependencies {
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("reflect"))
+
     implementation(platform(libs.spring.boot.dependencies))
     implementation(libs.bundles.spring) {
         exclude("org.springframework.boot", "spring-boot-starter-tomcat")

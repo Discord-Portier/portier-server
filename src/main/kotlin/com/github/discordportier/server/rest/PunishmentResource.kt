@@ -6,9 +6,9 @@ import com.github.discordportier.server.exception.PortierException
 import com.github.discordportier.server.model.api.request.PunishmentCreationRequest
 import com.github.discordportier.server.model.api.response.ErrorCode
 import com.github.discordportier.server.model.api.response.PunishmentCreationResponse
-import com.github.discordportier.server.model.database.PunishmentEntity
-import com.github.discordportier.server.model.database.PunishmentRepository
-import com.github.discordportier.server.model.database.ServerRepository
+import com.github.discordportier.server.model.database.punishment.PunishmentEntity
+import com.github.discordportier.server.model.database.punishment.PunishmentRepository
+import com.github.discordportier.server.model.database.server.ServerRepository
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
