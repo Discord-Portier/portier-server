@@ -21,7 +21,7 @@ class UserEntity(
     @Column(nullable = false)
     val salt: ByteArray,
 
-    @OneToMany(cascade = [CascadeType.ALL])
+    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     val userPermissions: MutableSet<UserPermissionEntity>,
 )

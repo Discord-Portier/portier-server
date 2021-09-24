@@ -1,6 +1,6 @@
 package com.github.discordportier.server.model.api.request
 
-import com.github.discordportier.server.model.database.user.UserPermission
+import com.github.discordportier.server.model.auth.UserPermission
 
 data class UserCreationRequest(
     val username: String,

@@ -38,7 +38,7 @@ class UserResource(
         val user = UserEntity(
             id = UUID.randomUUID(),
             username = request.username,
-            password = Hashing.hmacSha1(salt).hashString(request.password, Charsets.UTF_8).asBytes(),
+            password = Hashing.hmacSha512(salt).hashString(request.password, Charsets.UTF_8).asBytes(),
             salt = salt,
             userPermissions = mutableSetOf(),
         )
