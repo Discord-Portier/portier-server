@@ -11,11 +11,29 @@ CREATE TABLE portier.users
         UNIQUE (username)
 );
 
+CREATE TYPE portier.user_permission
+AS ENUM (
+    'READ_PUNISHMENTS',
+    'WRITE_PUNISHMENTS',
+    'LIFT_PUNISHMENTS',
+    'DELETE_PUNISHMENTS',
+    'LIFT_OTHERS_PUNISHMENTS',
+    'DELETE_OTHERS_PUNISHMENTS',
+
+    'READ_SERVERS',
+    'WRITE_SERVERS',
+
+    'READ_USER_LIST',
+    'CREATE_USER',
+    'DELETE_USER',
+    'MODIFY_USER'
+    );
+CREATE CAST (varchar as portier.user_permission) WITH INOUT AS IMPLICIT;
 CREATE TABLE portier.user_permissions
 (
     id         uuid primary key,
-    permission text not null,
-    user_id    uuid not null,
+    permission portier.user_permission not null,
+    user_id    uuid                    not null,
 
     CONSTRAINT user_id_fk
         FOREIGN KEY (user_id)

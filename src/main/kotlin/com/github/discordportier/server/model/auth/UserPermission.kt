@@ -1,8 +1,6 @@
 package com.github.discordportier.server.model.auth
 
 enum class UserPermission {
-    ADMINISTRATOR,
-
     READ_PUNISHMENTS,
     WRITE_PUNISHMENTS,
     LIFT_PUNISHMENTS,
