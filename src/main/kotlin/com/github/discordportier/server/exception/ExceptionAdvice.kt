@@ -4,12 +4,12 @@ import com.github.discordportier.server.model.api.response.ErrorCode
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.NativeWebRequest
 import org.zalando.problem.Problem
-import org.zalando.problem.StatusType
 import org.zalando.problem.spring.web.advice.ProblemHandling
 
 private val logger = KotlinLogging.logger { }
@@ -26,8 +26,8 @@ class ExceptionAdvice : ProblemHandling {
         return ResponseEntity.status(exception.errorCode.http).body(problem)
     }
 
-    @ExceptionHandler
-    fun handleAuthException(exception: AuthenticationException, webRequest: NativeWebRequest): ResponseEntity<Problem> {
+    @ExceptionHandler(value = [AuthenticationException::class, AccessDeniedException::class])
+    fun handleAuthException(exception: Exception, webRequest: NativeWebRequest): ResponseEntity<Problem> {
         val problem = prepare(exception, HttpStatus.UNAUTHORIZED.zalandoStatus, Problem.DEFAULT_TYPE)
             .with("error_code", ErrorCode.UNAUTHORIZED)
             .build()

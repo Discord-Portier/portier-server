@@ -1,12 +1,17 @@
 package com.github.discordportier.server.config
 
+import com.github.discordportier.server.authentication.PortierAuthenticationFilter
 import com.github.discordportier.server.authentication.PortierAuthenticationProvider
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
@@ -27,17 +32,32 @@ class WebSecurityConfig(
 //            .csrf().disable()
 //            .headers().frameOptions().disable()
         http
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+            .and()
+            .formLogin().disable()
+            .logout().disable()
             .csrf().disable()
             .headers().frameOptions().disable()
 
             .and()
+            .addFilterBefore(
+                PortierAuthenticationFilter(
+                    API_MATCHER,
+                    authenticationManager(),
+                    authenticationEntryPoint
+                ), AnonymousAuthenticationFilter::class.java
+            )
             .authenticationProvider(portierAuthenticationProvider)
-            .authorizeRequests()
-            .anyRequest().authenticated()
-            .and().httpBasic().realmName(REALM)
+            .authorizeRequests().anyRequest().permitAll()
+    }
+
+    @Bean
+    override fun authenticationManagerBean(): AuthenticationManager {
+        return super.authenticationManagerBean()
     }
 
     companion object {
-        const val REALM = "portier"
+        private val API_MATCHER = AntPathRequestMatcher("/**")
     }
 }

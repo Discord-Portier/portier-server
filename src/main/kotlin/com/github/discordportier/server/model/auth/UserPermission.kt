@@ -1,9 +1,6 @@
 package com.github.discordportier.server.model.auth
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import org.springframework.security.core.GrantedAuthority
-
-enum class UserPermission : GrantedAuthority {
+enum class UserPermission {
     ADMINISTRATOR,
 
     READ_PUNISHMENTS,
@@ -20,8 +17,4 @@ enum class UserPermission : GrantedAuthority {
     CREATE_USER,
     DELETE_USER,
     MODIFY_USER,
-    ;
-
-    @JsonIgnore
-    override fun getAuthority(): String = name
 }

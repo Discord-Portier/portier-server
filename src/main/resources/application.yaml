@@ -18,6 +18,10 @@ spring:
     schemas:
       - portier
 
+logging:
+  level:
+    com.github.discordportier.server: DEBUG
+
 springdoc:
   swagger-ui:
     path: /swagger/swagger-ui
