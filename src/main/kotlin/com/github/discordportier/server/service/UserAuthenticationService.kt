@@ -11,16 +11,14 @@ class UserAuthenticationService(
 ) {
     fun authenticate(username: String, password: String): UserEntity? {
         val user = userRepository.getByUsernameEquals(username)
-        if (user?.passwordEquals(password) == true) {
+        if (user?.password?.contentEquals(hashPassword(password, user.salt)) == true) {
             return user
         }
         return null
     }
 
-    private fun UserEntity.passwordEquals(password: String): Boolean =
-        this.password.contentEquals(
-            Hashing.hmacSha512(this.salt)
-                .hashString(password, Charsets.UTF_8)
-                .asBytes()
-        )
+    fun hashPassword(password: String, salt: ByteArray): ByteArray =
+        Hashing.hmacSha512(salt)
+            .hashString(password, Charsets.UTF_8)
+            .asBytes()
 }

@@ -13,7 +13,7 @@ import com.github.discordportier.server.model.auth.UserPermission
 import com.github.discordportier.server.model.database.user.UserEntity
 import com.github.discordportier.server.model.database.user.UserPermissionEntity
 import com.github.discordportier.server.model.database.user.UserRepository
-import com.google.common.hash.Hashing
+import com.github.discordportier.server.service.UserAuthenticationService
 import org.springframework.web.bind.annotation.*
 import java.security.SecureRandom
 import java.util.*
@@ -25,6 +25,7 @@ import kotlin.random.asKotlinRandom
 @Authenticated
 class UserResource(
     private val userRepository: UserRepository,
+    private val userAuthenticationService: UserAuthenticationService,
 ) {
     private val random = SecureRandom()
 
@@ -51,7 +52,7 @@ class UserResource(
         val user = UserEntity(
             id = UUID.randomUUID(),
             username = request.username,
-            password = Hashing.hmacSha512(salt).hashString(request.password, Charsets.UTF_8).asBytes(),
+            password = userAuthenticationService.hashPassword(request.password, salt),
             salt = salt,
             userPermissions = mutableSetOf(),
         )
