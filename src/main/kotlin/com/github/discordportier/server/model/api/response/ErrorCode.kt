@@ -10,6 +10,7 @@ enum class ErrorCode(
     // Common
     UNIMPLEMENTED(http = HttpStatus.NOT_IMPLEMENTED, webSocket = CloseStatus.SERVER_ERROR),
     UNKNOWN(http = HttpStatus.INTERNAL_SERVER_ERROR, webSocket = CloseStatus.SERVER_ERROR),
+    UNAUTHORIZED(http = HttpStatus.UNAUTHORIZED, webSocket = CloseStatus.POLICY_VIOLATION),
 
     // HTTP only
     UNKNOWN_SERVER(http = HttpStatus.BAD_REQUEST),

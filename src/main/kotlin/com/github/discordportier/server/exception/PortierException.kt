@@ -14,13 +14,3 @@ open class PortierException(
 
     override fun getLocalizedMessage(): String = "[$errorCode] $message"
 }
-
-private val statusCache = HttpStatus.values().associateWith {
-    object : StatusType {
-        override fun getStatusCode(): Int = it.value()
-        override fun getReasonPhrase(): String = it.reasonPhrase
-    }
-}
-
-private val HttpStatus.zalandoStatus: StatusType
-    get() = checkNotNull(statusCache[this]) { "unmapped status?: $this" }
