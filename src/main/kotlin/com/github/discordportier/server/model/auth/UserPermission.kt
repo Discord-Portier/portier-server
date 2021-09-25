@@ -1,5 +1,8 @@
 package com.github.discordportier.server.model.auth
 
+import io.swagger.v3.oas.annotations.media.Schema
+
+@Schema
 enum class UserPermission {
     READ_PUNISHMENTS,
     WRITE_PUNISHMENTS,
