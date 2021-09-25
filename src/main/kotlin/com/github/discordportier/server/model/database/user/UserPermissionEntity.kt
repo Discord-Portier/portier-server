@@ -1,6 +1,5 @@
 package com.github.discordportier.server.model.database.user
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.discordportier.server.model.auth.UserPermission
 import java.util.*
 import javax.persistence.*
@@ -15,7 +14,6 @@ class UserPermissionEntity(
     @Enumerated(EnumType.STRING)
     val permission: UserPermission,
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     val user: UserEntity,

@@ -1,5 +1,8 @@
 package com.github.discordportier.server.model.database.punishment
 
+import com.github.discordportier.server.model.database.actor.ActorEntity
+import com.github.discordportier.server.model.database.server.ServerEntity
+import com.github.discordportier.server.model.database.user.UserEntity
 import java.util.*
 import javax.persistence.*
 
@@ -9,12 +12,19 @@ class PunishmentEntity(
     @Id
     val id: UUID,
 
-    @Column(nullable = false, name = "target_id")
-    val targetId: Long,
+    @ManyToOne
+    @JoinColumn(name = "target_id", nullable = false)
+    val target: ActorEntity,
 
-    @Column(nullable = false, name = "punisher_id")
-    val punisherId: Long,
+    @ManyToOne
+    @JoinColumn(name = "punisher_id", nullable = false)
+    val punisher: ActorEntity,
 
-    @Column(nullable = false, name = "server_id")
-    val serverId: Long,
+    @ManyToOne
+    @JoinColumn(name = "server_id", nullable = false)
+    val server: ServerEntity,
+
+    @ManyToOne
+    @JoinColumn(name = "creator", nullable = false)
+    val creator: UserEntity,
 )

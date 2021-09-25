@@ -1,8 +1,10 @@
 package com.github.discordportier.server.model.api.response
 
+import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.http.HttpStatus
 import org.springframework.web.socket.CloseStatus
 
+@Schema
 enum class ErrorCode(
     val http: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
     val webSocket: CloseStatus = CloseStatus.SERVER_ERROR,
@@ -14,6 +16,7 @@ enum class ErrorCode(
 
     // HTTP only
     UNKNOWN_SERVER(http = HttpStatus.BAD_REQUEST),
+    UNKNOWN_ACTOR(http = HttpStatus.BAD_REQUEST),
     USER_ALREADY_EXISTS(http = HttpStatus.BAD_REQUEST),
 
     // WS only
