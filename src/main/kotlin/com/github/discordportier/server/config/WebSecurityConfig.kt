@@ -25,12 +25,6 @@ class WebSecurityConfig(
     }
 
     override fun configure(http: HttpSecurity) {
-//        http.authorizeRequests()
-//            .anyRequest()
-//            .anonymous()
-//            .and()
-//            .csrf().disable()
-//            .headers().frameOptions().disable()
         http
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
