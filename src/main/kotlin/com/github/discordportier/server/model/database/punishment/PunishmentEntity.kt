@@ -25,6 +25,6 @@ class PunishmentEntity(
     val server: ServerEntity,
 
     @ManyToOne
-    @JoinColumn(name = "creator", nullable = false)
+    @JoinColumn(name = "creator_id", nullable = false)
     val creator: UserEntity,
 )
