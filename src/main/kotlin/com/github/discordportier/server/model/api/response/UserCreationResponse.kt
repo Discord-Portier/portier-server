@@ -4,5 +4,4 @@ import java.util.*
 
 data class UserCreationResponse(
     val id: UUID,
-    val username: String,
 )

@@ -8,7 +8,6 @@ data class UserListResponse(
 ) {
     data class UserEntry(
         val id: UUID,
-        val username: String,
         val permissions: Collection<UserPermission>,
     )
 }

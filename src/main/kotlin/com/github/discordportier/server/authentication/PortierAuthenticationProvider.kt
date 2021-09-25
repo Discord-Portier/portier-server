@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
+import java.util.*
 
 private val logger = KotlinLogging.logger { }
 
@@ -20,14 +21,18 @@ class PortierAuthenticationProvider(
             throw BadCredentialsException("Not AuthenticatedUser")
         }
 
-        val username = authentication.credentials.name
+        val userId = try {
+            UUID.fromString(authentication.credentials.name)
+        } catch (ex: IllegalArgumentException) {
+            throw BadCredentialsException("Invalid user id", ex)
+        }
         val password = authentication.credentials.credentials.toString()
-        logger.debug { "Authenticating $username:$password" }
+        logger.debug { "Authenticating $userId:$password" }
 
-        val user = userAuthenticationService.authenticate(username, password)
-            ?: throw BadCredentialsException("Could not authenticate for user: $username")
+        val user = userAuthenticationService.authenticate(userId, password)
+            ?: throw BadCredentialsException("Could not authenticate for user: $userId")
 
-        logger.debug { "Authentication successful for $username" }
+        logger.debug { "Authentication successful for $userId" }
         return authentication.copy(user = user)
     }
 

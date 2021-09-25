@@ -34,7 +34,6 @@ class UserResource(
     fun listUsers(): UserListResponse = UserListResponse(userRepository.findAll().map {
         UserListResponse.UserEntry(
             id = it.id,
-            username = it.username,
             permissions = it.userPermissions.map(UserPermissionEntity::permission),
         )
     })
@@ -43,15 +42,9 @@ class UserResource(
     @ConsumeJson
     @PermissionRequired(UserPermission.CREATE_USER)
     fun newUser(@RequestBody request: UserCreationRequest): UserCreationResponse {
-        val existing = userRepository.getByUsernameEquals(request.username)
-        if (existing != null) {
-            throw PortierException(ErrorCode.USER_ALREADY_EXISTS, "Username ${request.username} already exists")
-        }
-
         val salt = random.asKotlinRandom().nextBytes(64)
         val user = UserEntity(
             id = UUID.randomUUID(),
-            username = request.username,
             password = userAuthenticationService.hashPassword(request.password, salt),
             salt = salt,
             userPermissions = mutableSetOf(),
@@ -64,6 +57,6 @@ class UserResource(
             )
         })
         userRepository.save(user)
-        return UserCreationResponse(user.id, user.username)
+        return UserCreationResponse(user.id)
     }
 }

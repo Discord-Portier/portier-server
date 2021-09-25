@@ -20,7 +20,7 @@ data class AuthenticatedUser(
     }
 
     override fun getCredentials(): UsernamePasswordAuthenticationToken = credentials
-    override fun getName(): String = user?.username ?: throw AuthenticationServiceException("Untrusted user")
+    override fun getName(): String = user?.id?.toString() ?: throw AuthenticationServiceException("Untrusted user")
     override fun getPrincipal(): UserEntity = user ?: throw AuthenticationServiceException("Untrusted user")
 
     override fun setAuthenticated(authenticated: Boolean) {

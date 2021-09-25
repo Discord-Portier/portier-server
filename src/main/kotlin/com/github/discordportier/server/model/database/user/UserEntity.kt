@@ -9,9 +9,6 @@ class UserEntity(
     @Id
     val id: UUID,
 
-    @Column(nullable = false)
-    val username: String,
-
     /**
      * SHA-512 hashed password.
      */
