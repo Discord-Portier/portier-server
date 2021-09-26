@@ -4,6 +4,7 @@ import com.github.discordportier.server.exception.PortierException
 import com.github.discordportier.server.model.api.request.PunishmentCreationRequest
 import com.github.discordportier.server.model.api.response.ErrorCode
 import com.github.discordportier.server.model.api.response.PunishmentCreationResponse
+import com.github.discordportier.server.model.api.response.PunishmentListResponse
 import com.github.discordportier.server.model.auth.AuthenticatedUser
 import com.github.discordportier.server.model.database.actor.ActorRepository
 import com.github.discordportier.server.model.database.punishment.PunishmentEntity
@@ -20,7 +21,15 @@ class PunishmentResource(
     private val actorRepository: ActorRepository,
     private val punishmentRepository: PunishmentRepository,
 ) : IPunishmentResource {
-    override fun listPunishments() = punishmentRepository.findAll().toList()
+    override fun listPunishments() = PunishmentListResponse(punishmentRepository.findAll().map {
+        PunishmentListResponse.PunishmentEntry(
+            id = it.id,
+            target = it.target.id,
+            punisher = it.punisher.id,
+            creation = it.created,
+            lastModified = it.modified,
+        )
+    })
 
     override fun newPunishment(
         authenticatedUser: AuthenticatedUser,
