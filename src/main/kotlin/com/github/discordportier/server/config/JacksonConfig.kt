@@ -1,5 +1,6 @@
 package com.github.discordportier.server.config
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -22,6 +23,7 @@ class JacksonConfig : Jackson2ObjectMapperBuilderCustomizer {
         )
         jacksonObjectMapperBuilder.featuresToDisable(
             SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,
+            DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
         )
         jacksonObjectMapperBuilder.propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
     }
