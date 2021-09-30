@@ -1,19 +1,20 @@
 package com.github.discordportier.server.authentication
 
+import java.lang.reflect.AnnotatedElement
+import java.lang.reflect.Method
+import kotlin.streams.asSequence
 import org.springframework.core.GenericTypeResolver
 import org.springframework.core.annotation.MergedAnnotations
 import org.springframework.security.access.ConfigAttribute
 import org.springframework.security.access.annotation.AnnotationMetadataExtractor
 import org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource
-import java.lang.reflect.AnnotatedElement
-import java.lang.reflect.Method
-import kotlin.streams.asSequence
 
 class PortierMetadataSources(
     private val annotationExtractors: Map<Class<Annotation>, AnnotationMetadataExtractor<*>>,
 ) : AbstractFallbackMethodSecurityMetadataSource() {
     constructor(annotationMetadataExtractors: Collection<AnnotationMetadataExtractor<*>>) : this(
         annotationMetadataExtractors.associateBy {
+            @Suppress("UNCHECKED_CAST")
             checkNotNull(
                 GenericTypeResolver.resolveTypeArgument(
                     it.javaClass,

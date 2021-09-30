@@ -2,7 +2,9 @@ package com.github.discordportier.server.authentication
 
 import mu.KotlinLogging
 import org.springframework.security.access.AccessDecisionVoter
-import org.springframework.security.access.AccessDecisionVoter.*
+import org.springframework.security.access.AccessDecisionVoter.ACCESS_ABSTAIN
+import org.springframework.security.access.AccessDecisionVoter.ACCESS_DENIED
+import org.springframework.security.access.AccessDecisionVoter.ACCESS_GRANTED
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.access.ConfigAttribute
 import org.springframework.security.access.vote.UnanimousBased
@@ -13,6 +15,7 @@ private val klogger = KotlinLogging.logger { }
 class PortierUnanimousBased(
     voters: List<AccessDecisionVoter<out Any>>,
 ) : UnanimousBased(voters) {
+    @Suppress("UNCHECKED_CAST")
     override fun getDecisionVoters(): List<AccessDecisionVoter<Any>> =
         // Kotlin makes this into List<AccessDecisionVoter<Nothing!>>; we want Any
         super.getDecisionVoters() as List<AccessDecisionVoter<Any>>

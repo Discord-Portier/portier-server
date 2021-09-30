@@ -10,6 +10,10 @@ problem = "0.26.0"
 problem-spring = "0.27.0"
 springdoc = "1.5.10"
 postgresql = "42.2.23"
+kotest = "4.6.3"
+kotest-spring = "1.0.1"
+mockk = "1.12.0"
+springmockk = "3.0.1"
 
 spring-boot = "2.5.4"
 spring-depman = "1.0.11.RELEASE"
@@ -42,6 +46,10 @@ jackson-xml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-xm
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
+kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotest-spring = { module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "kotest-spring" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-spring = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }
 
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 apache-commons-codec = { module = "commons-codec:commons-codec", version.ref = "commons-codec" }
@@ -81,6 +89,10 @@ springdoc = [
 testing-api = [
   "junit-jupiter-api",
   "junit-jupiter-params",
+  "kotest-runner",
+  "kotest-spring",
+  "mockk",
+  "mockk-spring",
   "spring-boot-starter-testing",
 ]
 testing-runtime = ["junit-jupiter-engine"]
