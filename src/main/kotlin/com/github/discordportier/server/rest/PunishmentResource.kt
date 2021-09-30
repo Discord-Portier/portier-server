@@ -11,9 +11,9 @@ import com.github.discordportier.server.model.database.punishment.PunishmentEnti
 import com.github.discordportier.server.model.database.punishment.PunishmentRepository
 import com.github.discordportier.server.model.database.server.ServerRepository
 import com.github.discordportier.server.rest.definition.IPunishmentResource
+import java.util.UUID
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 @RestController
 class PunishmentResource(
@@ -21,15 +21,18 @@ class PunishmentResource(
     private val actorRepository: ActorRepository,
     private val punishmentRepository: PunishmentRepository,
 ) : IPunishmentResource {
-    override fun listPunishments() = PunishmentListResponse(punishmentRepository.findAll().map {
-        PunishmentListResponse.PunishmentEntry(
-            id = it.id,
-            target = it.target.id,
-            punisher = it.punisher.id,
-            creation = it.created,
-            lastModified = it.modified,
-        )
-    })
+    override fun listPunishments() = PunishmentListResponse(
+        punishmentRepository.findAllByHiddenIsFalse()
+            .map {
+                PunishmentListResponse.PunishmentEntry(
+                    id = it.id,
+                    target = it.target.id,
+                    punisher = it.punisher.id,
+                    creation = it.created,
+                    lastModified = it.modified,
+                )
+            }
+    )
 
     override fun newPunishment(
         authenticatedUser: AuthenticatedUser,
@@ -48,6 +51,8 @@ class PunishmentResource(
             target = target,
             punisher = punisher,
             creator = authenticatedUser.principal,
+            lifted = false,
+            hidden = false,
         )
         val saved = punishmentRepository.save(punishment)
         return PunishmentCreationResponse(saved.id)
