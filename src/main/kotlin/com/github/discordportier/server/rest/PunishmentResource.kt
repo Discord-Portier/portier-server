@@ -8,6 +8,7 @@ import com.github.discordportier.server.model.api.response.PunishmentListRespons
 import com.github.discordportier.server.model.auth.AuthenticatedUser
 import com.github.discordportier.server.model.database.actor.ActorRepository
 import com.github.discordportier.server.model.database.punishment.PunishmentEntity
+import com.github.discordportier.server.model.database.punishment.PunishmentEvidenceEntity
 import com.github.discordportier.server.model.database.punishment.PunishmentRepository
 import com.github.discordportier.server.model.database.server.ServerRepository
 import com.github.discordportier.server.rest.definition.IPunishmentResource
@@ -50,10 +51,21 @@ class PunishmentResource(
             server = server,
             target = target,
             punisher = punisher,
+            punishmentCategory = request.category,
             creator = authenticatedUser.principal,
+            evidence = mutableSetOf(),
+            reason = request.reason,
             lifted = false,
             hidden = false,
         )
+        punishment.evidence.addAll(request.evidence.map {
+            PunishmentEvidenceEntity(
+                id = UUID.randomUUID(),
+                punishment = punishment,
+                creator = authenticatedUser.principal,
+                value = it.toString(),
+            )
+        })
         val saved = punishmentRepository.save(punishment)
         return PunishmentCreationResponse(saved.id)
     }
