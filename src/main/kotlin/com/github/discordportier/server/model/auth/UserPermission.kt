@@ -14,6 +14,9 @@ enum class UserPermission {
     READ_SERVERS,
     WRITE_SERVERS,
 
+    READ_ACTORS,
+    CREATE_ACTORS,
+
     READ_USER_LIST,
     CREATE_USER,
     DELETE_USER,
