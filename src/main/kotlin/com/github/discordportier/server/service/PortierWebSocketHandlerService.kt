@@ -87,5 +87,5 @@ class PortierWebSocketHandlerService(private val objectMapper: ObjectMapper) : W
     }
 
     private fun WebSocketSession.err(errorCode: ErrorCode, closeStatus: CloseStatus = errorCode.webSocket) =
-        closeWith(errorCode.webSocket, ErrorMessage(errorCode))
+        closeWith(closeStatus, ErrorMessage(errorCode))
 }
