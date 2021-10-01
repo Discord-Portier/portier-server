@@ -46,9 +46,7 @@ interface IPunishmentResource {
         ApiResponse(
             responseCode = "200",
             description = "A punishment was created.",
-            content = [Content(
-                schema = Schema(implementation = PunishmentCreationResponse::class),
-            )],
+            content = [Content(schema = Schema(implementation = PunishmentCreationResponse::class))],
         ),
         ApiResponse(
             responseCode = "400",
