@@ -31,7 +31,7 @@ class ExceptionAdvice : ProblemHandling {
             exception,
             webRequest,
             exception.errorCode,
-            zalandoStatus = exception.status,
+            springStatus = exception.httpStatus,
         )
 
     @ExceptionHandler(value = [AuthenticationException::class, AccessDeniedException::class])

@@ -5,10 +5,15 @@ import com.github.discordportier.server.exception.PortierException
 import com.github.discordportier.server.model.api.response.ErrorCode
 import com.github.discordportier.server.model.api.websocket.ErrorMessage
 import com.github.discordportier.server.model.api.websocket.IMessage
+import java.util.Collections
+import java.util.WeakHashMap
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import org.springframework.web.socket.*
-import java.util.*
+import org.springframework.web.socket.CloseStatus
+import org.springframework.web.socket.TextMessage
+import org.springframework.web.socket.WebSocketHandler
+import org.springframework.web.socket.WebSocketMessage
+import org.springframework.web.socket.WebSocketSession
 
 private val logger = KotlinLogging.logger { }
 
@@ -57,7 +62,11 @@ class PortierWebSocketHandlerService(private val objectMapper: ObjectMapper) : W
 
     override fun handleTransportError(session: WebSocketSession, exception: Throwable) {
         logger.warn(exception) { "Transport error to ${session.id} / ${session.remoteAddress}" }
-        session.err(ErrorCode.WEB_SOCKET_TRANSPORT_ERROR)
+        if (exception is PortierException) {
+            session.err(exception.errorCode, exception.wsStatus)
+        } else {
+            session.err(ErrorCode.WEB_SOCKET_TRANSPORT_ERROR)
+        }
     }
 
     override fun afterConnectionClosed(session: WebSocketSession, closeStatus: CloseStatus) {
@@ -77,6 +86,6 @@ class PortierWebSocketHandlerService(private val objectMapper: ObjectMapper) : W
         close(status)
     }
 
-    private fun WebSocketSession.err(errorCode: ErrorCode) =
+    private fun WebSocketSession.err(errorCode: ErrorCode, closeStatus: CloseStatus = errorCode.webSocket) =
         closeWith(errorCode.webSocket, ErrorMessage(errorCode))
 }
