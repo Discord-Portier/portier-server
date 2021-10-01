@@ -3,7 +3,9 @@ package com.github.discordportier.server.rest.definition
 import com.github.discordportier.server.annotation.ProduceJson
 import com.github.discordportier.server.annotation.openapi.UnauthorisedResponse
 import com.github.discordportier.server.annotation.security.Authenticated
+import com.github.discordportier.server.annotation.security.PermissionRequired
 import com.github.discordportier.server.model.api.response.ActorInfoResponse
+import com.github.discordportier.server.model.auth.UserPermission
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -26,5 +28,6 @@ interface IActorResource {
         content = [Content(schema = Schema(implementation = ActorInfoResponse::class))],
     )
     @UnauthorisedResponse
+    @PermissionRequired(UserPermission.READ_ACTORS)
     fun fetch(@PathVariable id: Long): ActorInfoResponse
 }
