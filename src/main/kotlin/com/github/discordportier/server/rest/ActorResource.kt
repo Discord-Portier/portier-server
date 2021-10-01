@@ -6,6 +6,7 @@ import com.github.discordportier.server.model.api.response.ErrorCode
 import com.github.discordportier.server.model.database.actor.ActorRepository
 import com.github.discordportier.server.rest.definition.IActorResource
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -14,7 +15,7 @@ class ActorResource(
 ) : IActorResource {
     override fun fetch(id: Long): ActorInfoResponse {
         val actor = actorRepository.findByIdOrNull(id)
-            ?: throw PortierException(ErrorCode.UNKNOWN_ACTOR)
+            ?: throw PortierException(ErrorCode.UNKNOWN_ACTOR, httpStatus = HttpStatus.NOT_FOUND)
         return ActorInfoResponse(
             id = actor.id,
             name = actor.username,
