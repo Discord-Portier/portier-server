@@ -1,8 +1,8 @@
 package com.github.discordportier.server.model.api.response
 
 import io.swagger.v3.oas.annotations.media.Schema
-import org.zalando.problem.Problem
 import java.net.URI
+import org.zalando.problem.Problem
 
 /**
  * A container showing how a [Problem] is serialised for OpenAPI purposes.
@@ -14,7 +14,7 @@ import java.net.URI
     description = """An OpenAPI3 definition equivalent of
         <a href="https://javadoc.io/static/org.zalando/problem/0.26.0/org/zalando/problem/Problem.html"><code>org.zalando.problem.Problem</code></a>.""",
 )
-interface OpenApiProblem {
+sealed interface OpenApiProblem {
     @Schema(
         name = "type",
         description = """An absolute URI that identifies the problem type.
