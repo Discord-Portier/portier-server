@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 
-@Tag(name = "Ping")
+@Tag(name = "Actor")
 @RequestMapping("/v1/actor")
 @ProduceJson
 @Authenticated
@@ -29,5 +29,5 @@ interface IActorResource {
     )
     @UnauthorisedResponse
     @PermissionRequired(UserPermission.READ_ACTORS)
-    fun fetch(@PathVariable id: Long): ActorInfoResponse
+    suspend fun fetch(@PathVariable id: Long): ActorInfoResponse
 }

@@ -1,57 +1,84 @@
 package com.github.discordportier.server.config
 
-import com.github.discordportier.server.authentication.PortierAuthenticationFilter
-import com.github.discordportier.server.authentication.PortierAuthenticationProvider
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.discordportier.server.authentication.PortierAuthenticationManager
+import com.github.discordportier.server.exception.zalandoStatus
+import com.github.discordportier.server.model.api.response.ErrorCode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.reactor.awaitSingle
+import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.reactor.mono
+import kotlinx.coroutines.withContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.web.AuthenticationEntryPoint
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.codec.HttpMessageWriter
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder
+import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter
+import org.springframework.web.reactive.function.server.HandlerStrategies
+import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.result.view.ViewResolver
+import org.zalando.problem.Problem
 
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 class WebSecurityConfig(
-    private val authenticationEntryPoint: AuthenticationEntryPoint,
-    private val portierAuthenticationProvider: PortierAuthenticationProvider,
-) : WebSecurityConfigurerAdapter() {
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.authenticationProvider(portierAuthenticationProvider)
-    }
-
-    override fun configure(http: HttpSecurity) {
-        http
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-            .and()
-            .formLogin().disable()
-            .logout().disable()
-            .csrf().disable()
-            .headers().frameOptions().disable()
-
-            .and()
-            .addFilterBefore(
-                PortierAuthenticationFilter(
-                    API_MATCHER,
-                    authenticationManager(),
-                    authenticationEntryPoint
-                ), AnonymousAuthenticationFilter::class.java
-            )
-            .authenticationProvider(portierAuthenticationProvider)
-            .authorizeRequests().anyRequest().permitAll()
-    }
+    private val portierAuthenticationManager: PortierAuthenticationManager,
+) {
+    private val problemMediaType = MediaType.parseMediaType("application/problem+json")
 
     @Bean
-    override fun authenticationManagerBean(): AuthenticationManager {
-        return super.authenticationManagerBean()
-    }
+    fun securityWebFilterChain(http: ServerHttpSecurity, objectMapper: ObjectMapper): SecurityWebFilterChain =
+        http
+            .httpBasic { it.disable() }
+            .formLogin { it.disable() }
+            .logout { it.disable() }
+            .csrf { it.disable() }
+            .headers { it.frameOptions().disable() }
 
-    companion object {
-        private val API_MATCHER = AntPathRequestMatcher("/**")
-    }
+            .authorizeExchange { it.anyExchange().authenticated() }
+            .httpBasic { it.disable() }
+            .addFilterAfter(
+                AuthenticationWebFilter(portierAuthenticationManager).also {
+                    it.setAuthenticationFailureHandler { webFilterExchange, exception ->
+                        mono {
+                            val body = Problem.builder()
+                                .withStatus(HttpStatus.UNAUTHORIZED.zalandoStatus)
+                                .withTitle("Unauthorized")
+                                .withDetail("Unauthorized")
+                                .with("error_code", ErrorCode.UNAUTHORIZED)
+                                .build()
+                            val serialisedBody = withContext(Dispatchers.IO) { objectMapper.writeValueAsString(body) }
+
+                            ServerResponse.status(HttpStatus.UNAUTHORIZED)
+                                .contentType(problemMediaType)
+                                .header(HttpHeaders.WWW_AUTHENTICATE, "Basic")
+                                .bodyValue(serialisedBody)
+                                .awaitSingle()
+                                .writeTo(webFilterExchange.exchange, DefaultServerResponseContext)
+                                .awaitSingleOrNull()
+                        }
+                    }
+                },
+                SecurityWebFiltersOrder.REACTOR_CONTEXT
+            )
+
+            .build()
+}
+
+private object DefaultServerResponseContext : ServerResponse.Context {
+    private val handlerStrategies = HandlerStrategies.withDefaults()
+
+    override fun messageWriters(): List<HttpMessageWriter<*>> =
+        handlerStrategies.messageWriters()
+
+    override fun viewResolvers(): List<ViewResolver> =
+        handlerStrategies.viewResolvers()
 }

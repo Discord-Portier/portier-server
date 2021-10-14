@@ -1,6 +1,7 @@
 package com.github.discordportier.server.rest
 
 import com.github.discordportier.server.exception.PortierException
+import com.github.discordportier.server.ext.io
 import com.github.discordportier.server.model.api.request.PunishmentCreationRequest
 import com.github.discordportier.server.model.api.response.ErrorCode
 import com.github.discordportier.server.model.api.response.PunishmentCreationResponse
@@ -22,8 +23,8 @@ class PunishmentResource(
     private val actorRepository: ActorRepository,
     private val punishmentRepository: PunishmentRepository,
 ) : IPunishmentResource {
-    override fun listPunishments() = PunishmentListResponse(
-        punishmentRepository.findAllByHiddenIsFalse()
+    override suspend fun listPunishments() = PunishmentListResponse(
+        io { punishmentRepository.findAllByHiddenIsFalse() }
             .map {
                 PunishmentListResponse.PunishmentEntry(
                     id = it.id,
@@ -35,15 +36,15 @@ class PunishmentResource(
             }
     )
 
-    override fun newPunishment(
+    override suspend fun newPunishment(
         authenticatedUser: AuthenticatedUser,
         request: PunishmentCreationRequest,
     ): PunishmentCreationResponse {
-        val server = serverRepository.findByIdOrNull(request.server)
+        val server = io { serverRepository.findByIdOrNull(request.server) }
             ?: throw PortierException(ErrorCode.UNKNOWN_SERVER)
-        val target = actorRepository.findByIdOrNull(request.target)
+        val target = io { actorRepository.findByIdOrNull(request.target) }
             ?: throw PortierException(ErrorCode.UNKNOWN_ACTOR)
-        val punisher = actorRepository.findByIdOrNull(request.punisher)
+        val punisher = io { actorRepository.findByIdOrNull(request.punisher) }
             ?: throw PortierException(ErrorCode.UNKNOWN_ACTOR)
 
         val punishment = PunishmentEntity(
@@ -66,7 +67,7 @@ class PunishmentResource(
                 value = it.toString(),
             )
         })
-        val saved = punishmentRepository.save(punishment)
+        val saved = io { punishmentRepository.save(punishment) }
         return PunishmentCreationResponse(saved.id)
     }
 }

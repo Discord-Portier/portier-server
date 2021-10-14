@@ -34,7 +34,7 @@ interface IUserResource {
     )
     @UnauthorisedResponse
     @PermissionRequired(UserPermission.READ_USER_LIST)
-    fun listUsers(): UserListResponse
+    suspend fun listUsers(): UserListResponse
 
     @PostMapping("/new")
     @ConsumeJson
@@ -46,7 +46,7 @@ interface IUserResource {
     )
     @UnauthorisedResponse
     @PermissionRequired(UserPermission.CREATE_USER)
-    fun newUser(
+    suspend fun newUser(
         @Parameter(required = true)
         @RequestBody
         request: UserCreationRequest

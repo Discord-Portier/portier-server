@@ -28,5 +28,5 @@ interface IServerResource {
     )
     @UnauthorisedResponse
     @PermissionRequired(UserPermission.READ_SERVERS)
-    fun list(): ServerListResponse
+    suspend fun list(): ServerListResponse
 }

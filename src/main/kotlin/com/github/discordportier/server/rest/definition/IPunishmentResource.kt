@@ -37,7 +37,7 @@ interface IPunishmentResource {
     )
     @UnauthorisedResponse
     @PermissionRequired(UserPermission.READ_PUNISHMENTS)
-    fun listPunishments(): PunishmentListResponse
+    suspend fun listPunishments(): PunishmentListResponse
 
     @PostMapping("/new")
     @ConsumeJson
@@ -66,7 +66,7 @@ interface IPunishmentResource {
     )
     @UnauthorisedResponse
     @PermissionRequired(UserPermission.WRITE_PUNISHMENTS)
-    fun newPunishment(
+    suspend fun newPunishment(
         @Parameter(hidden = true)
         authenticatedUser: AuthenticatedUser,
 

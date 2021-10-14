@@ -19,10 +19,13 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
+    implementation(libs.kotlin.coroutines)
+    implementation(libs.kotlin.coroutines.reactor)
 
     implementation(platform(libs.spring.boot.dependencies))
     implementation(libs.bundles.spring) {
         exclude("org.springframework.boot", "spring-boot-starter-tomcat")
+        exclude("org.springframework.boot", "spring-boot-starter-webmvc")
     }
 
     implementation(libs.bundles.jackson)

@@ -14,6 +14,7 @@ kotest = "4.6.3"
 kotest-spring = "1.0.1"
 mockk = "1.12.0"
 springmockk = "3.0.1"
+kotlin-coroutines = "1.5.2"
 
 spring-boot = "2.5.4"
 spring-depman = "1.0.11.RELEASE"
@@ -24,7 +25,7 @@ gradle-test-logger = "3.0.0"
 [libraries]
 # Use spring-boot-dependencies for versions.
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
@@ -32,7 +33,6 @@ spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-sta
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 spring-boot-starter-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow" }
 spring-boot-starter-testing = { module = "org.springframework.boot:spring-boot-starter-test" }
-spring-boot-starter-websocket = { module = "org.springframework.boot:spring-boot-starter-websocket" }
 
 logback = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback" }
 kotlin-logging = { module = "io.github.microutils:kotlin-logging-jvm", version.ref = "kotlin-logging" }
@@ -55,16 +55,17 @@ guava = { module = "com.google.guava:guava", version.ref = "guava" }
 apache-commons-codec = { module = "commons-codec:commons-codec", version.ref = "commons-codec" }
 problem = { module = "org.zalando:problem", version.ref = "problem" }
 problem-jackson = { module = "org.zalando:jackson-datatype-problem", version.ref = "problem" }
-problem-spring = { module = "org.zalando:problem-spring-web-starter", version.ref = "problem-spring" }
-springdoc = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "springdoc" }
-springdoc-webmvc = { module = "org.springdoc:springdoc-openapi-webmvc-core", version.ref = "springdoc" }
+problem-spring = { module = "org.zalando:problem-spring-webflux", version.ref = "problem-spring" }
+springdoc-webflux = { module = "org.springdoc:springdoc-openapi-webflux-ui", version.ref = "springdoc" }
 springdoc-kotlin = { module = "org.springdoc:springdoc-openapi-kotlin", version.ref = "springdoc" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 flyway = { module = "org.flywaydb:flyway-core" } # Spring platform
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlin-coroutines" }
+kotlin-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "kotlin-coroutines" }
 
 [bundles]
 spring = [
-  "spring-boot-starter-web",
+  "spring-boot-starter-webflux",
   "spring-boot-starter-actuator",
   "spring-boot-starter-data-jpa",
   "flyway", # Hand-in-hand with JPA
@@ -72,7 +73,6 @@ spring = [
   "spring-boot-starter-cache",
   "spring-boot-starter-validation",
   "spring-boot-starter-undertow",
-  "spring-boot-starter-websocket",
 ]
 jackson = [
   "jackson-core",
@@ -82,8 +82,7 @@ jackson = [
   "jackson-xml",
 ]
 springdoc = [
-  "springdoc",
-  "springdoc-webmvc",
+  "springdoc-webflux",
   "springdoc-kotlin",
 ]
 testing-api = [

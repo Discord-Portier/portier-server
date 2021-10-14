@@ -2,31 +2,48 @@ package com.github.discordportier.server.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.discordportier.server.exception.PortierException
+import com.github.discordportier.server.ext.io
 import com.github.discordportier.server.model.api.response.ErrorCode
 import com.github.discordportier.server.model.api.websocket.ErrorMessage
 import com.github.discordportier.server.model.api.websocket.IMessage
+import com.github.discordportier.server.model.auth.AuthenticatedUser
 import java.util.Collections
 import java.util.WeakHashMap
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.reactive.awaitFirst
+import kotlinx.coroutines.reactive.publish
+import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.reactor.mono
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import org.springframework.web.socket.CloseStatus
-import org.springframework.web.socket.TextMessage
-import org.springframework.web.socket.WebSocketHandler
-import org.springframework.web.socket.WebSocketMessage
-import org.springframework.web.socket.WebSocketSession
+import org.springframework.web.reactive.socket.CloseStatus
+import org.springframework.web.reactive.socket.WebSocketHandler
+import org.springframework.web.reactive.socket.WebSocketMessage
+import org.springframework.web.reactive.socket.WebSocketSession
+import reactor.core.publisher.Mono
 
-private val logger = KotlinLogging.logger { }
+private val klogger = KotlinLogging.logger { }
 
 @Service
-class PortierWebSocketHandlerService(private val objectMapper: ObjectMapper) : WebSocketHandler {
+class PortierWebSocketHandlerService(
+    private val objectMapper: ObjectMapper,
+) : WebSocketHandler {
     private val sessions: MutableMap<String, WebSocketSession> = Collections.synchronizedMap(WeakHashMap())
 
-    fun publish(message: IMessage) {
-        val json = TextMessage(objectMapper.writeValueAsString(message))
+    suspend fun publish(message: IMessage) {
+        val json = io { objectMapper.writeValueAsBytes(message) }
         var suppressedExceptions: MutableList<Exception>? = null
         for (it in sessions.values) {
+            if (!it.isOpen) {
+                continue
+            }
+
             try {
-                it.sendMessage(json)
+                it.send(publish {
+                    WebSocketMessage(WebSocketMessage.Type.TEXT, io { it.bufferFactory().wrap(json) })
+                }).awaitSingleOrNull()
+            } catch (ignored: CancellationException) {
+                // Ignore this: the job is cancelled and is a NORMAL exit of the coroutine.
             } catch (ex: Exception) {
                 if (suppressedExceptions == null) {
                     suppressedExceptions = mutableListOf(ex)
@@ -42,50 +59,59 @@ class PortierWebSocketHandlerService(private val objectMapper: ObjectMapper) : W
         }
     }
 
-    override fun supportsPartialMessages(): Boolean = true
+    override fun handle(session: WebSocketSession): Mono<Void?> = mono {
+        try {
+            handle0(session)
+        } catch (ignored: CancellationException) {
+            // Ignore this: the job is cancelled and is a NORMAL exit of the coroutine.
+        } catch (ex: PortierException) {
+            session.err(ex.errorCode, ex.wsStatus)
+            klogger.warn(ex) { "Exception in WS session of ${session.id} / ${session.handshakeInfo.remoteAddress}" }
+        } catch (ex: Exception) {
+            session.err(ErrorCode.UNKNOWN)
+            klogger.error(ex) { "Exception in WS session of ${session.id} / ${session.handshakeInfo.remoteAddress}" }
+        }
+        sessions.remove(session.id, session)
+        null
+    }
 
-    override fun afterConnectionEstablished(session: WebSocketSession) {
-        sessions.compute(session.id) { _, existing ->
-            if (existing != null) {
-                session.err(ErrorCode.WEB_SOCKET_ID_HIJACK_DISALLOWED)
-                existing
-            } else {
-                session
+    private suspend fun handle0(session: WebSocketSession) {
+        if (sessions.getOrPut(session.id) { session } !== session) {
+            session.err(ErrorCode.WEB_SOCKET_ID_HIJACK_DISALLOWED)
+            return
+        }
+
+        // We have now set up the socket for success.
+        // As the messages will be published elsewhere, we have nothing to worry about here now.
+
+        try {
+            // Block the coroutine on receiving messages OR ending connection.
+            if (session.receive().awaitFirst() != null) {
+                val user = session.handshakeInfo.principal.awaitSingleOrNull() as? AuthenticatedUser
+                val id = when {
+                    user != null -> "user id ${user.name} (session ${session.id})"
+                    else -> "session ${session.id}"
+                }
+                klogger.warn { "Received message from $id / ${session.handshakeInfo.remoteAddress}: dropping connection" }
+                session.err(ErrorCode.WEB_SOCKET_CANNOT_RECEIVE)
             }
+        } catch (ignored: NoSuchElementException) {
+            // No message was received. All is well :)
         }
     }
 
-    override fun handleMessage(session: WebSocketSession, message: WebSocketMessage<*>) {
-        logger.warn { "Received message from ${session.id} / ${session.remoteAddress}; dropping connection" }
-        session.err(ErrorCode.WEB_SOCKET_CANNOT_RECEIVE)
+    private suspend fun WebSocketSession.sendJsonMessage(value: IMessage?) {
+        send(publish {
+            val payload = io { bufferFactory().wrap(objectMapper.writeValueAsBytes(value)) }
+            send(WebSocketMessage(WebSocketMessage.Type.TEXT, payload))
+        }).awaitSingleOrNull()
     }
 
-    override fun handleTransportError(session: WebSocketSession, exception: Throwable) {
-        logger.warn(exception) { "Transport error to ${session.id} / ${session.remoteAddress}" }
-        if (exception is PortierException) {
-            session.err(exception.errorCode, exception.wsStatus)
-        } else {
-            session.err(ErrorCode.WEB_SOCKET_TRANSPORT_ERROR)
-        }
-    }
-
-    override fun afterConnectionClosed(session: WebSocketSession, closeStatus: CloseStatus) {
-        if (closeStatus.code != CloseStatus.NORMAL.code) {
-            logger.warn { "Session ${session.id} / ${session.remoteAddress} closed with status $closeStatus" }
-        }
-
-        sessions.remove(session.id)
-    }
-
-    private fun WebSocketSession.sendJsonMessage(value: IMessage?) {
-        sendMessage(TextMessage(objectMapper.writeValueAsString(value)))
-    }
-
-    private fun WebSocketSession.closeWith(status: CloseStatus, message: IMessage?) {
+    private suspend fun WebSocketSession.closeWith(status: CloseStatus, message: IMessage?) {
         sendJsonMessage(message)
-        close(status)
+        close(status).awaitSingleOrNull()
     }
 
-    private fun WebSocketSession.err(errorCode: ErrorCode, closeStatus: CloseStatus = errorCode.webSocket) =
-        closeWith(closeStatus, ErrorMessage(errorCode))
+    private suspend fun WebSocketSession.err(errorCode: ErrorCode, closeStatus: CloseStatus = errorCode.webSocket) =
+        closeWith(closeStatus.withReason(errorCode.name), ErrorMessage(errorCode))
 }

@@ -2,7 +2,7 @@ package com.github.discordportier.server.model.api.response
 
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.http.HttpStatus
-import org.springframework.web.socket.CloseStatus
+import org.springframework.web.reactive.socket.CloseStatus
 
 @Schema
 enum class ErrorCode(

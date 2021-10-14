@@ -1,17 +1,18 @@
 package com.github.discordportier.server.service
 
+import com.github.discordportier.server.ext.io
 import com.github.discordportier.server.model.database.user.UserEntity
 import com.github.discordportier.server.model.database.user.UserRepository
 import com.google.common.hash.Hashing
+import java.util.UUID
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class UserAuthenticationService(
     private val userRepository: UserRepository,
 ) {
-    fun authenticate(id: UUID, password: String): UserEntity? {
-        val user = userRepository.getByIdEquals(id) ?: return null
+    suspend fun authenticate(id: UUID, password: String): UserEntity? {
+        val user = io { userRepository.getByIdEquals(id) } ?: return null
         return user.takeIf { user.password.contentEquals(hashPassword(password, user.salt)) }
     }
 
