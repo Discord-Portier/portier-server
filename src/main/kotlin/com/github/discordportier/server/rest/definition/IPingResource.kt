@@ -32,7 +32,6 @@ interface IPingResource {
     )
     @ConsumeJson
     @UnauthorisedResponse
-    @PermissionRequired(UserPermission.WRITE_PUNISHMENTS)
     suspend fun ping(
         @Parameter(required = true)
         @RequestBody
