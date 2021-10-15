@@ -4,10 +4,8 @@ import com.github.discordportier.server.annotation.ConsumeJson
 import com.github.discordportier.server.annotation.ProduceJson
 import com.github.discordportier.server.annotation.openapi.UnauthorisedResponse
 import com.github.discordportier.server.annotation.security.Authenticated
-import com.github.discordportier.server.annotation.security.PermissionRequired
 import com.github.discordportier.server.model.api.request.PingRequest
 import com.github.discordportier.server.model.api.response.PongResponse
-import com.github.discordportier.server.model.auth.UserPermission
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
