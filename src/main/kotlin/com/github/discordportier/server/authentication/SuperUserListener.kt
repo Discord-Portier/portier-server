@@ -41,6 +41,7 @@ class SuperUserListener {
             password = userAuthenticationService.hashPassword(password, salt),
             salt = salt,
             userPermissions = mutableSetOf(),
+            creator = null,
         )
         user.userPermissions.addAll(
             UserPermission.values().map {

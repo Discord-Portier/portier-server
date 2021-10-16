@@ -43,6 +43,13 @@ dependencies {
     testRuntimeOnly(libs.bundles.testing.runtime)
 }
 
+allOpen {
+    // We want Hibernate to proxy certain classes.
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
+}
+
 indra {
     javaVersions {
         target(11)

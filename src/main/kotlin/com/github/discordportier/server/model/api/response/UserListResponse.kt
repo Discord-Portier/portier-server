@@ -3,7 +3,7 @@ package com.github.discordportier.server.model.api.response
 import com.github.discordportier.server.model.auth.UserPermission
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Schema
-import java.util.*
+import java.util.UUID
 
 @Schema
 data class UserListResponse(
@@ -17,5 +17,8 @@ data class UserListResponse(
 
         @Schema(description = "The permissions of the user.", required = true)
         val permissions: Collection<UserPermission>,
+
+        @Schema(description = "The creator of the user.")
+        val creator: UUID?,
     )
 }
