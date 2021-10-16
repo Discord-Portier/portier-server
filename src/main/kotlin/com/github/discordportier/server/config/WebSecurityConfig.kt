@@ -43,7 +43,11 @@ class WebSecurityConfig(
             .csrf { it.disable() }
             .headers { it.frameOptions().disable() }
 
-            .authorizeExchange { it.anyExchange().authenticated() }
+            .authorizeExchange {
+                it
+                    .pathMatchers("/swagger/**").permitAll()
+                    .anyExchange().authenticated()
+            }
             .httpBasic { it.disable() }
             .addFilterAfter(
                 AuthenticationWebFilter(portierAuthenticationManager).also {
