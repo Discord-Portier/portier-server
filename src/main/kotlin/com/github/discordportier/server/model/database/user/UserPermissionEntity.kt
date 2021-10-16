@@ -2,11 +2,19 @@ package com.github.discordportier.server.model.database.user
 
 import com.github.discordportier.server.ext.now
 import com.github.discordportier.server.model.auth.UserPermission
+import java.time.ZonedDateTime
+import java.util.UUID
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
+import javax.persistence.FetchType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.Table
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
-import java.time.ZonedDateTime
-import java.util.*
-import javax.persistence.*
 
 @Entity
 @Table(schema = "portier", name = "user_permissions")
@@ -21,6 +29,10 @@ class UserPermissionEntity(
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     val user: UserEntity,
+
+    @ManyToOne(fetch = FetchType.EAGER) // Let this be eager as a permission is useless on its own without a user.
+    @JoinColumn(name = "creator_id", nullable = false)
+    val creator: UserEntity,
 
     @CreationTimestamp
     @Column(nullable = false)

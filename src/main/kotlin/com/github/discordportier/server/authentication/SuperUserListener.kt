@@ -48,7 +48,8 @@ class SuperUserListener {
                 UserPermissionEntity(
                     id = UUID.randomUUID(),
                     permission = it,
-                    user = user
+                    user = user,
+                    creator = user,
                 )
             }
         )

@@ -56,6 +56,7 @@ class UserResource(
                 id = UUID.randomUUID(),
                 user = user,
                 permission = it,
+                creator = actor.user,
             )
         })
 

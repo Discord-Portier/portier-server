@@ -6,6 +6,7 @@ import java.time.ZonedDateTime
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
@@ -19,11 +20,11 @@ class PunishmentEvidenceEntity(
     @Id
     val id: UUID,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "punishment_id", nullable = false)
     val punishment: PunishmentEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
     val creator: UserEntity,
 

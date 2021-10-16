@@ -27,19 +27,19 @@ class PunishmentEntity(
     @Id
     val id: UUID,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_id", nullable = false)
     val target: ActorEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "punisher_id", nullable = false)
     val punisher: ActorEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "server_id", nullable = false)
     val server: ServerEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
     val creator: UserEntity,
 
@@ -56,7 +56,7 @@ class PunishmentEntity(
     @Enumerated(EnumType.STRING)
     val punishmentCategory: PunishmentCategory,
 
-    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinColumn(name = "punishment_id")
     val evidence: MutableSet<PunishmentEvidenceEntity>,
 
