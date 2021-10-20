@@ -58,7 +58,12 @@ indra {
     github("Discord-Portier", "portier-server") {
         ci(true)
     }
-    // TODO(Mariell Hoversholm): Decide upon licence
+
+    license {
+        this.name("Mozilla Public License Version 2.0")
+            .spdx("MPL-2.0")
+            .url("https://www.mozilla.org/en-US/MPL/2.0/")
+    }
 }
 
 testlogger {
