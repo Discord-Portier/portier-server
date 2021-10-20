@@ -1,4 +1,4 @@
-package com.github.discordportier.server.model.database.punishment
+package com.github.discordportier.server.model.database.infraction
 
 import com.github.discordportier.server.ext.now
 import com.github.discordportier.server.model.database.user.UserEntity
@@ -15,14 +15,14 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 
 @Entity
-@Table(schema = "portier", name = "punishment_evidence")
-class PunishmentEvidenceEntity(
+@Table(schema = "portier", name = "infraction_evidence")
+class InfractionEvidenceEntity(
     @Id
     val id: UUID,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "punishment_id", nullable = false)
-    val punishment: PunishmentEntity,
+    @JoinColumn(name = "infraction_id", nullable = false)
+    val punishment: InfractionEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)

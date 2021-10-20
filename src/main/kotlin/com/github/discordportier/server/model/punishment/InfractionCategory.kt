@@ -1,6 +1,6 @@
 package com.github.discordportier.server.model.punishment
 
-enum class PunishmentCategory {
+enum class InfractionCategory {
     INHUMANE_BEHAVIOUR,
     RACISM,
     DEATH_THREATS,

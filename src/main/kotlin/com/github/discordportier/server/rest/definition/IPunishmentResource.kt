@@ -8,7 +8,7 @@ import com.github.discordportier.server.annotation.security.PermissionRequired
 import com.github.discordportier.server.model.api.request.PunishmentCreationRequest
 import com.github.discordportier.server.model.api.response.OpenApiProblem
 import com.github.discordportier.server.model.api.response.PunishmentCreationResponse
-import com.github.discordportier.server.model.api.response.PunishmentListResponse
+import com.github.discordportier.server.model.api.response.InfractionListResponse
 import com.github.discordportier.server.model.auth.AuthenticatedUser
 import com.github.discordportier.server.model.auth.UserPermission
 import io.swagger.v3.oas.annotations.Operation
@@ -33,11 +33,11 @@ interface IPunishmentResource {
     @ApiResponse(
         responseCode = "200",
         description = "A list of all punishments.",
-        content = [Content(schema = Schema(implementation = PunishmentListResponse::class))],
+        content = [Content(schema = Schema(implementation = InfractionListResponse::class))],
     )
     @UnauthorisedResponse
     @PermissionRequired(UserPermission.READ_PUNISHMENTS)
-    suspend fun listPunishments(): PunishmentListResponse
+    suspend fun listPunishments(): InfractionListResponse
 
     @PostMapping("/new")
     @ConsumeJson

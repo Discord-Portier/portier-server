@@ -1,10 +1,10 @@
-package com.github.discordportier.server.model.database.punishment
+package com.github.discordportier.server.model.database.infraction
 
 import com.github.discordportier.server.ext.now
 import com.github.discordportier.server.model.database.actor.ActorEntity
 import com.github.discordportier.server.model.database.server.ServerEntity
 import com.github.discordportier.server.model.database.user.UserEntity
-import com.github.discordportier.server.model.punishment.PunishmentCategory
+import com.github.discordportier.server.model.punishment.InfractionCategory
 import java.time.ZonedDateTime
 import java.util.UUID
 import javax.persistence.CascadeType
@@ -22,8 +22,8 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 
 @Entity
-@Table(schema = "portier", name = "punishments")
-class PunishmentEntity(
+@Table(schema = "portier", name = "infractions")
+class InfractionEntity(
     @Id
     val id: UUID,
 
@@ -52,13 +52,13 @@ class PunishmentEntity(
     @Column(nullable = false)
     val reason: String,
 
-    @Column(name = "punishment_category", nullable = false)
+    @Column(name = "category", nullable = false)
     @Enumerated(EnumType.STRING)
-    val punishmentCategory: PunishmentCategory,
+    val infractionCategory: InfractionCategory,
 
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    @JoinColumn(name = "punishment_id")
-    val evidence: MutableSet<PunishmentEvidenceEntity>,
+    @JoinColumn(name = "infraction_id")
+    val evidence: MutableSet<InfractionEvidenceEntity>,
 
     @CreationTimestamp
     @Column(nullable = false)

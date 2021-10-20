@@ -1,6 +1,6 @@
 package com.github.discordportier.server.model.api.request
 
-import com.github.discordportier.server.model.punishment.PunishmentCategory
+import com.github.discordportier.server.model.punishment.InfractionCategory
 import io.swagger.v3.oas.annotations.media.Schema
 import java.net.URI
 
@@ -16,7 +16,7 @@ data class PunishmentCreationRequest(
     val server: Long,
 
     @Schema(description = "The punishment category this goes under.", required = true)
-    val category: PunishmentCategory,
+    val category: InfractionCategory,
 
     @Schema(description = "The reason for the punishment to be placed.", required = true)
     val reason: String,
