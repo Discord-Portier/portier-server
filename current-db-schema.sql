@@ -43,13 +43,17 @@ CREATE TABLE portier.user_permissions
     id         uuid PRIMARY KEY,
     permission portier.user_permission NOT NULL,
     user_id    uuid                    NOT NULL,
+    creator_id uuid                    NOT NULL,
     modified   timestamptz             NOT NULL DEFAULT NOW(),
     created    timestamptz             NOT NULL DEFAULT NOW(),
 
     CONSTRAINT user_id_fk
         FOREIGN KEY (user_id)
             REFERENCES portier.users (id)
-            ON DELETE CASCADE
+            ON DELETE CASCADE,
+    CONSTRAINT creator_id_fk
+        FOREIGN KEY (creator_id)
+            REFERENCES portier.users (id)
 );
 
 CREATE TABLE portier.servers
@@ -80,7 +84,7 @@ CREATE TABLE portier.actors
             REFERENCES portier.users (id)
 );
 
-CREATE TYPE portier.punishment_category
+CREATE TYPE portier.infraction_category
 AS ENUM (
     'INHUMANE_BEHAVIOUR',
     'RACISM',
@@ -88,8 +92,8 @@ AS ENUM (
     'DOXXING',
     'OTHER'
     );
-CREATE CAST (VARCHAR AS portier.punishment_category) WITH INOUT AS IMPLICIT;
-CREATE TABLE portier.punishments
+CREATE CAST (VARCHAR AS portier.infraction_category) WITH INOUT AS IMPLICIT;
+CREATE TABLE portier.infractions
 (
     id          uuid PRIMARY KEY,
     target_id   BIGINT                      NOT NULL,
@@ -97,7 +101,7 @@ CREATE TABLE portier.punishments
     server_id   BIGINT                      NOT NULL,
     creator_id  uuid                        NOT NULL,
     reason      TEXT                        NOT NULL,
-    category    portier.punishment_category NOT NULL,
+    category    portier.infraction_category NOT NULL,
     lifted      BOOLEAN                     NOT NULL DEFAULT FALSE,
     hidden      BOOLEAN                     NOT NULL DEFAULT FALSE,
     modified    timestamptz                 NOT NULL DEFAULT NOW(),
@@ -116,21 +120,21 @@ CREATE TABLE portier.punishments
         FOREIGN KEY (creator_id)
             REFERENCES portier.users (id)
 );
-CREATE INDEX punishments_target_id_idx
-    ON portier.punishments (target_id);
+CREATE INDEX infractions_target_id_idx
+    ON portier.infractions (target_id);
 
-CREATE TABLE portier.punishment_evidence
+CREATE TABLE portier.infraction_evidence
 (
     id            uuid PRIMARY KEY,
-    punishment_id uuid        NOT NULL,
+    infraction_id uuid        NOT NULL,
     creator_id    uuid        NOT NULL,
     value         TEXT        NOT NULL,
     created       timestamptz NOT NULL DEFAULT NOW(),
     modified      timestamptz NOT NULL DEFAULT NOW(),
 
-    CONSTRAINT punishment_id_fk
-        FOREIGN KEY (punishment_id)
-            REFERENCES portier.punishments (id),
+    CONSTRAINT infraction_id_fk
+        FOREIGN KEY (infraction_id)
+            REFERENCES portier.infractions (id),
     CONSTRAINT creator_id_fk
         FOREIGN KEY (creator_id)
             REFERENCES portier.users (id)
