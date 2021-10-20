@@ -5,20 +5,20 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.net.URI
 
 @Schema
-data class PunishmentCreationRequest(
-    @Schema(description = "The target user of this punishment.", required = true)
+data class InfractionCreationRequest(
+    @Schema(description = "The target user of this infraction.", required = true)
     val target: Long,
 
-    @Schema(description = "The punisher of this punishment.", required = true)
+    @Schema(description = "The punisher of this infraction.", required = true)
     val punisher: Long,
 
-    @Schema(description = "The server this punishment belongs to.", required = true)
+    @Schema(description = "The server this infraction belongs to.", required = true)
     val server: Long,
 
-    @Schema(description = "The punishment category this goes under.", required = true)
+    @Schema(description = "The infraction category this goes under.", required = true)
     val category: InfractionCategory,
 
-    @Schema(description = "The reason for the punishment to be placed.", required = true)
+    @Schema(description = "The reason for the infraction to be placed.", required = true)
     val reason: String,
 
     @Schema(description = "Evidence in form of links.", required = true)

@@ -2,7 +2,7 @@ package com.github.discordportier.server.rest
 
 import com.github.discordportier.server.exception.PortierException
 import com.github.discordportier.server.ext.io
-import com.github.discordportier.server.model.api.request.PunishmentCreationRequest
+import com.github.discordportier.server.model.api.request.InfractionCreationRequest
 import com.github.discordportier.server.model.api.response.ErrorCode
 import com.github.discordportier.server.model.api.response.InfractionListResponse
 import com.github.discordportier.server.model.api.response.PunishmentCreationResponse
@@ -12,18 +12,18 @@ import com.github.discordportier.server.model.database.infraction.InfractionEnti
 import com.github.discordportier.server.model.database.infraction.InfractionEvidenceEntity
 import com.github.discordportier.server.model.database.infraction.InfractionRepository
 import com.github.discordportier.server.model.database.server.ServerRepository
-import com.github.discordportier.server.rest.definition.IPunishmentResource
+import com.github.discordportier.server.rest.definition.IInfractionResource
 import java.util.UUID
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class PunishmentResource(
+class InfractionResource(
     private val serverRepository: ServerRepository,
     private val actorRepository: ActorRepository,
     private val infractionRepository: InfractionRepository,
-) : IPunishmentResource {
-    override suspend fun listPunishments() = InfractionListResponse(
+) : IInfractionResource {
+    override suspend fun listInfractions() = InfractionListResponse(
         io { infractionRepository.findAllByHiddenIsFalse() }
             .map {
                 InfractionListResponse.InfractionEntry(
@@ -36,9 +36,9 @@ class PunishmentResource(
             }
     )
 
-    override suspend fun newPunishment(
+    override suspend fun newInfraction(
         authenticatedUser: AuthenticatedUser,
-        request: PunishmentCreationRequest,
+        request: InfractionCreationRequest,
     ): PunishmentCreationResponse {
         val server = io { serverRepository.findByIdOrNull(request.server) }
             ?: throw PortierException(ErrorCode.UNKNOWN_SERVER)

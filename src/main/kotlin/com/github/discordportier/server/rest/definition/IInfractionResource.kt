@@ -5,10 +5,10 @@ import com.github.discordportier.server.annotation.ProduceJson
 import com.github.discordportier.server.annotation.openapi.UnauthorisedResponse
 import com.github.discordportier.server.annotation.security.Authenticated
 import com.github.discordportier.server.annotation.security.PermissionRequired
-import com.github.discordportier.server.model.api.request.PunishmentCreationRequest
+import com.github.discordportier.server.model.api.request.InfractionCreationRequest
+import com.github.discordportier.server.model.api.response.InfractionListResponse
 import com.github.discordportier.server.model.api.response.OpenApiProblem
 import com.github.discordportier.server.model.api.response.PunishmentCreationResponse
-import com.github.discordportier.server.model.api.response.InfractionListResponse
 import com.github.discordportier.server.model.auth.AuthenticatedUser
 import com.github.discordportier.server.model.auth.UserPermission
 import io.swagger.v3.oas.annotations.Operation
@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 
-@Tag(name = "Punishment")
-@RequestMapping("/v1/punishment")
+@Tag(name = "Infraction")
+@RequestMapping("/v1/infraction")
 @ProduceJson
 @Authenticated
-interface IPunishmentResource {
+interface IInfractionResource {
     @GetMapping("/list")
-    @Operation(summary = "Fetches a list of all punishments.")
+    @Operation(summary = "Fetches a list of all infractions.")
     @ApiResponse(
         responseCode = "200",
         description = "A list of all punishments.",
@@ -37,15 +37,15 @@ interface IPunishmentResource {
     )
     @UnauthorisedResponse
     @PermissionRequired(UserPermission.READ_PUNISHMENTS)
-    suspend fun listPunishments(): InfractionListResponse
+    suspend fun listInfractions(): InfractionListResponse
 
     @PostMapping("/new")
     @ConsumeJson
-    @Operation(summary = "Creates a new punishment.")
+    @Operation(summary = "Creates a new infraction.")
     @ApiResponses(
         ApiResponse(
             responseCode = "200",
-            description = "A punishment was created.",
+            description = "An infraction was created.",
             content = [Content(schema = Schema(implementation = PunishmentCreationResponse::class))],
         ),
         ApiResponse(
@@ -66,12 +66,12 @@ interface IPunishmentResource {
     )
     @UnauthorisedResponse
     @PermissionRequired(UserPermission.WRITE_PUNISHMENTS)
-    suspend fun newPunishment(
+    suspend fun newInfraction(
         @Parameter(hidden = true)
         authenticatedUser: AuthenticatedUser,
 
         @Parameter(required = true)
         @RequestBody
-        request: PunishmentCreationRequest,
+        request: InfractionCreationRequest,
     ): PunishmentCreationResponse
 }
