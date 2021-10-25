@@ -24,20 +24,34 @@ dependencies {
 
     implementation(platform(libs.spring.boot.dependencies))
     implementation(libs.bundles.spring) {
-        exclude("org.springframework.boot", "spring-boot-starter-tomcat")
-        exclude("org.springframework.boot", "spring-boot-starter-webmvc")
+        exclude("org.springframework.boot", "spring-boot-starter-tomcat") // We use Undertow
+        exclude("org.springframework.boot", "spring-boot-starter-webmvc") // We use WebFlux
     }
 
-    implementation(libs.bundles.jackson)
-    implementation(libs.logback)
-    implementation(libs.kotlin.logging)
     implementation(libs.guava)
     implementation(libs.apache.commons.codec)
+
+    implementation(libs.jackson.core)
+    implementation(libs.jackson.databind)
+    implementation(libs.jackson.kotlin) // data classes etc...
+    implementation(libs.jackson.yaml) // YAML application configuration
+    implementation(libs.jackson.xml) // Logback configuration
+
+    implementation(libs.logback)
+    implementation(libs.kotlin.logging)
+
     implementation(libs.problem)
     implementation(libs.problem.jackson)
     implementation(libs.problem.spring)
-    implementation(libs.bundles.springdoc)
-    runtimeOnly(libs.postgresql)
+
+    implementation(libs.springdoc.webflux)
+    implementation(libs.springdoc.kotlin)
+
+    implementation(libs.exposed.dao) // Kotlin database ORM
+    implementation(libs.exposed.spring) // Spring Boot starter for Exposed
+    implementation(libs.exposed.javatime) // `java.time` support
+    implementation(libs.flyway) // Migrations; Exposed can't do them.
+    runtimeOnly(libs.postgresql) // Only for SQL client driver
 
     testImplementation(libs.bundles.testing.api)
     testRuntimeOnly(libs.bundles.testing.runtime)

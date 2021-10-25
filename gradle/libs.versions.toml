@@ -14,6 +14,7 @@ kotest-spring = "1.0.1" # https://search.maven.org/artifact/io.kotest.extensions
 mockk = "1.12.0" # https://search.maven.org/artifact/io.mockk/mockk
 springmockk = "3.0.1" # https://search.maven.org/artifact/com.ninja-squad/springmockk
 kotlin-coroutines = "1.5.2" # https://search.maven.org/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm
+exposed = "0.35.3" # https://search.maven.org/artifact/org.jetbrains.exposed/exposed-bom
 
 spring-boot = "2.5.5" # https://search.maven.org/artifact/org.springframework.boot/spring-boot
 spring-depman = "1.0.11.RELEASE" # https://plugins.gradle.org/plugin/io.spring.dependency-management
@@ -22,6 +23,11 @@ indra = "2.0.6" # https://plugins.gradle.org/plugin/net.kyori.indra
 gradle-test-logger = "3.0.0" # https://plugins.gradle.org/plugin/com.adarshr.test-logger
 
 [libraries]
+# Kotlin dependencies
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlin-coroutines" }
+kotlin-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "kotlin-coroutines" }
+
+# Spring dependencies
 # Use spring-boot-dependencies for versions.
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
 spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
@@ -52,37 +58,29 @@ mockk-spring = { module = "com.ninja-squad:springmockk", version.ref = "springmo
 
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 apache-commons-codec = { module = "commons-codec:commons-codec", version.ref = "commons-codec" }
+
 problem = { module = "org.zalando:problem", version.ref = "problem" }
 problem-jackson = { module = "org.zalando:jackson-datatype-problem", version.ref = "problem" }
 problem-spring = { module = "org.zalando:problem-spring-webflux", version.ref = "problem-spring" }
+
 springdoc-webflux = { module = "org.springdoc:springdoc-openapi-webflux-ui", version.ref = "springdoc" }
 springdoc-kotlin = { module = "org.springdoc:springdoc-openapi-kotlin", version.ref = "springdoc" }
-postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-spring = { module = "org.jetbrains.exposed:exposed-spring-boot-starter", version.ref = "exposed" }
+exposed-javatime = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
 flyway = { module = "org.flywaydb:flyway-core" } # Spring platform
-kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlin-coroutines" }
-kotlin-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "kotlin-coroutines" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 
 [bundles]
 spring = [
   "spring-boot-starter-webflux",
   "spring-boot-starter-actuator",
   "spring-boot-starter-data-jpa",
-  "flyway", # Hand-in-hand with JPA
   "spring-boot-starter-security",
   "spring-boot-starter-cache",
   "spring-boot-starter-validation",
   "spring-boot-starter-undertow",
-]
-jackson = [
-  "jackson-core",
-  "jackson-kotlin",
-  "jackson-databind",
-  "jackson-yaml",
-  "jackson-xml",
-]
-springdoc = [
-  "springdoc-webflux",
-  "springdoc-kotlin",
 ]
 testing-api = [
   "junit-jupiter-api",

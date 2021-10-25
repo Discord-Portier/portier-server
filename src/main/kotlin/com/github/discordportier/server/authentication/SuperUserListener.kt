@@ -1,9 +1,8 @@
 package com.github.discordportier.server.authentication
 
 import com.github.discordportier.server.model.auth.UserPermission
-import com.github.discordportier.server.model.database.user.UserEntity
-import com.github.discordportier.server.model.database.user.UserPermissionEntity
-import com.github.discordportier.server.model.database.user.UserRepository
+import com.github.discordportier.server.model.database.UserEntity
+import com.github.discordportier.server.model.database.UserPermissionEntity
 import com.github.discordportier.server.service.UserAuthenticationService
 import java.util.UUID
 import kotlin.random.Random
@@ -14,6 +13,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 private val klogger = KotlinLogging.logger { }
 
@@ -21,11 +21,11 @@ private val klogger = KotlinLogging.logger { }
 @Component
 class SuperUserListener {
     @EventListener
+    @Transactional
     fun listen(event: ContextRefreshedEvent) {
-        val userRepository = event.applicationContext.getBean<UserRepository>()
         val userAuthenticationService = event.applicationContext.getBean<UserAuthenticationService>()
 
-        if (userRepository.count() != 0L) {
+        if (UserEntity.count() != 0L) {
             klogger.debug("No super user is being created")
             return
         }
@@ -36,23 +36,17 @@ class SuperUserListener {
 
         klogger.info { "Creating super user $id with password $password" }
 
-        val user = UserEntity(
-            id = id,
-            password = userAuthenticationService.hashPassword(password, salt),
-            salt = salt,
-            userPermissions = mutableSetOf(),
-            creator = null,
-        )
-        user.userPermissions.addAll(
-            UserPermission.values().map {
-                UserPermissionEntity(
-                    id = UUID.randomUUID(),
-                    permission = it,
-                    user = user,
-                    creator = user,
-                )
+        val user = UserEntity.new(id) {
+            this.password = userAuthenticationService.hashPassword(password, salt)
+            this.salt = salt
+            this.creator = null
+        }
+        UserPermission.values().forEach {
+            UserPermissionEntity.new {
+                this.permission = it
+                this.user = user
+                this.creator = user
             }
-        )
-        userRepository.save(user)
+        }
     }
 }
