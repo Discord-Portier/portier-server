@@ -51,4 +51,4 @@ spring:
 
 logging:
   level:
-    com.github.discordportier.server: INFO
+    io.github.discordportier.server: INFO
