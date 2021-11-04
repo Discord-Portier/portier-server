@@ -9,7 +9,7 @@ class ServiceApplication {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            SpringApplication.run(io.github.discordportier.server.ServiceApplication::class.java, *args)
+            SpringApplication.run(ServiceApplication::class.java, *args)
         }
     }
 }
