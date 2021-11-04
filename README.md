@@ -27,7 +27,7 @@ API can be accessed over `/v1`.
 
 The websocket API is simply for subscriptions. If you attempt to write to the API, it will disconnect you accordingly:
 
-```json
+```java
 > hello, world!
 < {"type": "error", "code": "WEB_SOCKET_CANNOT_RECEIVE"}
 Disconnected (code: 1003, reason: "")
